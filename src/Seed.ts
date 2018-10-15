@@ -24,38 +24,36 @@ export class Seed {
             publicKey: libs.base58.encode(keys.publicKey)
         };
 
+        console.log(this)
+
         Object.freeze(this);
         Object.freeze(this.keyPair);
     }
 
     public encrypt(password: string, encryptionRounds?: number) {
-        return Seed.encryptSeedPhrase(this.phrase, password, encryptionRounds);
+        return Seed.encryptSeedPhrase(this.phrase, password, this.address);
     }
 
-    public static encryptSeedPhrase(seedPhrase: string, password: string, encryptionRounds: number = 5000): string {
+    public static encryptSeedPhrase(seedPhrase: string, password: string, address: string): string {
         if (password && password.length < 8) {
             // logger.warn('Your password may be too weak');
-        }
-
-        if (encryptionRounds < 1000) {
-            // logger.warn('Encryption rounds may be too few');
         }
 
         if (seedPhrase.length < config.get('minimalSeedLength')) {
             throw new Error('The seed phrase you are trying to encrypt is too short');
         }
 
-        return utils.crypto.encryptSeed(seedPhrase, password, encryptionRounds);
+        return utils.crypto.encryptSeed(seedPhrase, password, address);
     }
 
-    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, encryptionRounds: number = 5000): string {
+    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, address: string): string {
 
         const wrongPasswordMessage = 'The password is wrong';
 
         let phrase;
 
         try {
-            phrase = utils.crypto.decryptSeed(encryptedSeedPhrase, password, encryptionRounds);
+            phrase = utils.crypto.decryptSeed(encryptedSeedPhrase, password, address);
         } catch (e) {
             throw new Error(wrongPasswordMessage);
         }

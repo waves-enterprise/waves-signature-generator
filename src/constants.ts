@@ -47,8 +47,8 @@ export const enum TRANSACTION_TYPE_VERSION {
 export const WAVES_ID = 'WAVES';
 export const WAVES_BLOCKCHAIN_ID = '';
 
-export const MAINNET_BYTE: number = 'W'.charCodeAt(0);
-export const TESTNET_BYTE: number = 'T'.charCodeAt(0);
+export const MAINNET_BYTE: number = 'D'.charCodeAt(0); // todo изменить когда формализируем коды байтов сетей
+export const TESTNET_BYTE: number = 'D'.charCodeAt(0); //
 
 export const ADDRESS_VERSION: number = 1;
 export const ALIAS_VERSION: number = 2;
@@ -61,7 +61,7 @@ export const DATA_ENTRIES_BYTE_LIMIT: number = 140 * 1024 - DATA_TX_SIZE_WITHOUT
 
 export const INITIAL_NONCE: number = 0;
 export const PRIVATE_KEY_LENGTH: number = 32;
-export const PUBLIC_KEY_LENGTH: number = 32;
+export const PUBLIC_KEY_LENGTH: number = 64;
 
 // That is to mark ByteProcessor instances which cannot be affected by user
 export const STUB_NAME = 'reservedName';
