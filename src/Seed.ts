@@ -24,8 +24,6 @@ export class Seed {
             publicKey: libs.base58.encode(keys.publicKey)
         };
 
-        console.log(this)
-
         Object.freeze(this);
         Object.freeze(this.keyPair);
     }
