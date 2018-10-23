@@ -1,4 +1,5 @@
 import {MAINNET_BYTE, TESTNET_BYTE, Seed, config} from '../src/index';
+import {TX_NUMBER_MAP} from '../src/signatureFactory/SignatureFactory'
 
 const MAINNET = {
     PHRASE: 'wreck author problem inch innocent surround raise code immune wink scare joke tank dragon teach',

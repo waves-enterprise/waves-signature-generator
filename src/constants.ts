@@ -1,3 +1,34 @@
+export const PERMISSION_TRANSACTION_ROLE = {
+    MINER: 'miner',
+    ISSUER: 'issuer',
+    DEX: 'dex',
+    PERMISSIONER: 'permissioner',
+    BLACKLISTER: 'blacklister',
+    BANNED: 'banned'
+};
+
+export const PERMISSION_TRANSACTION_ROLE_BYTE ={
+    MINER: 1,
+    ISSUER: 2,
+    DEX: 3,
+    PERMISSIONER: 4,
+    BLACKLISTER: 5,
+    BANNED: 6
+};
+
+export const enum PERMISSION_TRANSACTION_OPERATION_TYPE {
+    ADD = 'add',
+    REMOVE = 'remove'
+}
+
+const PERMISSION_TRANSACTION_OPERATION_TYPE_ADD_BYTE = 'a'.charCodeAt(0);
+const PERMISSION_TRANSACTION_OPERATION_TYPE_REMOVE_BYTE = 'r'.charCodeAt(0);
+
+export const PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE = {
+    ADD: PERMISSION_TRANSACTION_OPERATION_TYPE_ADD_BYTE,
+    REMOVE: PERMISSION_TRANSACTION_OPERATION_TYPE_REMOVE_BYTE
+};
+
 export const enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
     ISSUE = 3,
@@ -11,7 +42,8 @@ export const enum TRANSACTION_TYPE_NUMBER {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14
+    SPONSORSHIP = 14,
+    PERMIT = 102
 }
 
 export const enum TRANSACTION_TYPE {
@@ -26,7 +58,8 @@ export const enum TRANSACTION_TYPE {
     MASS_TRANSFER = 'massTransfer',
     DATA = 'data',
     SET_SCRIPT = 'setScript',
-    SPONSORSHIP = 'sponsorship'
+    SPONSORSHIP = 'sponsorship',
+    PERMIT = 'permit'
 }
 
 export const enum TRANSACTION_TYPE_VERSION {
@@ -41,14 +74,15 @@ export const enum TRANSACTION_TYPE_VERSION {
     MASS_TRANSFER = 1,
     DATA = 1,
     SET_SCRIPT = 1,
-    SPONSORSHIP = 1
+    SPONSORSHIP = 1,
+    PERMIT = 1
 }
 
 export const WAVES_ID = 'WAVES';
 export const WAVES_BLOCKCHAIN_ID = '';
 
 export const MAINNET_BYTE: number = 'D'.charCodeAt(0); // todo изменить когда формализируем коды байтов сетей
-export const TESTNET_BYTE: number = 'D'.charCodeAt(0); //
+export const TESTNET_BYTE: number = 'D'.charCodeAt(0); // 68
 
 export const ADDRESS_VERSION: number = 1;
 export const ALIAS_VERSION: number = 2;

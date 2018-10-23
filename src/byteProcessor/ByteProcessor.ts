@@ -1,12 +1,17 @@
-import { BigNumber } from '@waves/data-entities';
-import { toByteArray } from 'base64-js';
+import {BigNumber} from '@waves/data-entities';
+import {toByteArray} from 'base64-js';
 import base58 from '../libs/base58';
 import convert from '../utils/convert';
-import { concatUint8Arrays } from '../utils/concat';
-import { DATA_ENTRIES_BYTE_LIMIT, STUB_NAME } from '../constants';
-import { config } from '..';
-import { ALIAS_VERSION, TRANSFER_ATTACHMENT_BYTE_LIMIT, WAVES_BLOCKCHAIN_ID, WAVES_ID } from '../constants';
-
+import {concatUint8Arrays} from '../utils/concat';
+import {DATA_ENTRIES_BYTE_LIMIT, STUB_NAME} from '../constants';
+import {config} from '..';
+import {ALIAS_VERSION, TRANSFER_ATTACHMENT_BYTE_LIMIT, WAVES_BLOCKCHAIN_ID, WAVES_ID} from '../constants';
+import {
+    PERMISSION_TRANSACTION_ROLE,
+    PERMISSION_TRANSACTION_ROLE_BYTE,
+    PERMISSION_TRANSACTION_OPERATION_TYPE,
+    PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE
+} from '../constants';
 
 // NOTE : Waves asset ID in blockchain transactions equals to an empty string
 function blockchainifyAssetId(assetId: string): string {
@@ -182,6 +187,71 @@ export class Transfers extends ByteProcessor {
         });
     }
 }
+
+// PERMISSIONS
+export class PermissionTarget extends ByteProcessor {
+    public process(value: string) {
+        const addressBytes = base58.decode(value);
+        return Promise.resolve(Uint8Array.from(addressBytes));
+    }
+}
+
+// opType: "a" or "r" (byte)
+export class PermissionOpType extends ByteProcessor {
+    public process(value: string) {
+        let opByte;
+
+        if (value === PERMISSION_TRANSACTION_OPERATION_TYPE.ADD) {
+            opByte = PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE.ADD
+        } else if (value === PERMISSION_TRANSACTION_OPERATION_TYPE.REMOVE) {
+            opByte = PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE.REMOVE
+        } else {
+            throw new Error(`Unknown permission operation type: ${value}`)
+        }
+
+        return Promise.resolve(Uint8Array.from([opByte]));
+    }
+}
+
+// role: 1-6 (byte)
+export class PermissionRole extends ByteProcessor {
+    public process(value: string) {
+        const roleKey = Object.keys(PERMISSION_TRANSACTION_ROLE)
+            .find(k => PERMISSION_TRANSACTION_ROLE[k] === value);
+
+        if (!roleKey) {
+            throw new Error(`Permission role ${value} not found`)
+        }
+
+        const roleByte = PERMISSION_TRANSACTION_ROLE_BYTE[roleKey];
+        return Promise.resolve(Uint8Array.from([roleByte]));
+    }
+}
+
+// dueTimestamp: 0 + 0 * sizeOfLong | 1 + dueTimestamp.toBytes
+export class PermissionDueTimestamp extends ByteProcessor {
+    public process(value: number | string | BigNumber) {
+        // no due timestamp specified
+        if (!+value || isNaN(+value)) {
+            const emptyDueTimestamp = Uint8Array.from(new Array(9).fill(0));
+            return Promise.resolve(emptyDueTimestamp)
+        }
+
+        let bytes;
+
+        if (typeof value === 'number') {
+            bytes = convert.longToByteArray(value);
+        } else {
+            if (typeof value === 'string') {
+                value = new BigNumber(value);
+            }
+            bytes = convert.bigNumberToByteArray(value);
+        }
+
+        return Promise.resolve(Uint8Array.from([1, ...bytes]));
+    }
+}
+
 
 // DATA TRANSACTIONS ONLY
 

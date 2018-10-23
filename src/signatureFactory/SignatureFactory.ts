@@ -9,9 +9,14 @@ import {
     Long,
     MandatoryAssetId, OrderType,
     Recipient,
-    StringWithLength, Transfers
+    StringWithLength, Transfers,
+    PermissionTarget,
+    PermissionOpType,
+    PermissionRole,
+    PermissionDueTimestamp
 } from '..';
 import {
+    IPERMIT_PROPS,
     IBURN_PROPS, ICANCEL_LEASING_PROPS, ICANCEL_ORDER_PROPS, ICREATE_ALIAS_PROPS, IDEFAULT_PROPS,
     IISSUE_PROPS, ILEASE_PROPS, IORDER_PROPS, IREISSUE_PROPS,
     ISignatureGenerator,
@@ -19,7 +24,7 @@ import {
     TTX_NUMBER_MAP,
     TTX_TYPE_MAP
 } from './interface';
-import { concatUint8Arrays } from '../utils/concat';
+import {concatUint8Arrays} from '../utils/concat';
 import crypto from '../utils/crypto';
 import * as constants from '../constants';
 
@@ -98,10 +103,10 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
                 const result = this._dataHolders[i];
                 if (result instanceof Promise) {
                     return result.then(bytes => {
-                        return { bytes, from: field && field.name || field };
+                        return {bytes, from: field && field.name || field};
                     });
                 } else {
-                    return Promise.resolve({ bytes: result, from: field });
+                    return Promise.resolve({bytes: result, from: field});
                 }
             }));
         }
@@ -148,6 +153,39 @@ export const CANCEL_ORDER_SIGNATURE = generate<ICANCEL_ORDER_PROPS>([
     new Base58('senderPublicKey'),
     new Base58('orderId')
 ]);
+
+/*
+1) typeId: 102 (byte)
+2) version: 1 (byte)
+3) senderPublicKey: 64 bytes
+4) target: Address or Alias bytes
+5) timestamp.toBytes
+6) PermissionOp bytes:
+	6.1) opType: "a" or "r" (byte)
+	6.2) role: 1-6 (byte)
+	6.3) timestamp.toBytes
+	6.4) dueTimestamp: 0 + 0 * sizeOfLong | 1 + dueTimestamp.toBytes
+*/
+const PERMIT = generate<IPERMIT_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.PERMIT,
+    constants.TRANSACTION_TYPE_VERSION.PERMIT,
+    new Base58('senderPublicKey'),
+    new PermissionTarget('target'),
+    // new Long('fee'),
+    new Long('timestamp'),
+    new PermissionOpType('opType'),
+    new PermissionRole('role'),
+    new Long('timestamp'),
+    new PermissionDueTimestamp('dueTimestamp')
+    /*PermissionTarget,
+    PermissionOpType,
+    PermissionRole,
+    PermissionDueTimestamp*/
+    // new Long('dueTimestamp'),
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.PERMIT] = PERMIT;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.PERMIT] = PERMIT;
 
 const ISSUE = generate<IISSUE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.ISSUE,
