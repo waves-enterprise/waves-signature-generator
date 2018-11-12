@@ -19,6 +19,7 @@ import * as base64 from 'base64-js';
 import { concatUint8Arrays } from './utils/concat';
 import convert from './utils/convert';
 import crypto from './utils/crypto';
+import cryptoGost from './utils/cryptoGost';
 
 export const libs = {
     base64,
@@ -33,5 +34,6 @@ export const libs = {
 export const utils = {
     concatUint8Arrays,
     convert,
-    crypto
+    crypto,
+    cryptoGost
 };

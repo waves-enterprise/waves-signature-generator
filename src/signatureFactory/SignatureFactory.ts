@@ -25,7 +25,9 @@ import {
     TTX_TYPE_MAP
 } from './interface';
 import {concatUint8Arrays} from '../utils/concat';
+import cryptoGost from '../utils/cryptoGost';
 import crypto from '../utils/crypto';
+
 import * as constants from '../constants';
 
 
@@ -81,9 +83,11 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
             });
         }
 
-        public getSignature(privateKey: string): Promise<string> {
+        public getSignature(privateKey: string, isGost: boolean = true): Promise<string> {
+            const c = isGost ? cryptoGost : crypto;
+
             return this.getBytes().then((dataBytes) => {
-                return crypto.buildTransactionSignature(dataBytes, privateKey);
+                return c.buildTransactionSignature(dataBytes, privateKey);
             });
         }
 

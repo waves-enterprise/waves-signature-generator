@@ -9,50 +9,15 @@ import { keccak256 } from '../libs/sha3';
 
 import { concatUint8Arrays } from './concat';
 import { config } from '../';
-import { ADDRESS_VERSION, INITIAL_NONCE, PRIVATE_KEY_LENGTH, PUBLIC_KEY_LENGTH } from '../constants';
+import { ADDRESS_VERSION, INITIAL_NONCE, PRIVATE_KEY_LENGTH, PUBLIC_KEY_LENGTH_GOST as PUBLIC_KEY_LENGTH } from '../constants';
 import { IKeyPairBytes } from '../interface';
-
-
-function sha256(input: Array<number> | Uint8Array | string): Uint8Array {
-
-    let bytes;
-    if (typeof input === 'string') {
-        bytes = converters.stringToByteArray(input);
-    } else {
-        bytes = input;
-    }
-
-    const wordArray = converters.byteArrayToWordArrayEx(Uint8Array.from(bytes));
-    const resultWordArray = CryptoJS.SHA256(wordArray);
-
-    return converters.wordArrayToByteArrayEx(resultWordArray);
-
-}
-
-function blake2b(input) {
-    return blake.blake2b(input, null, 32);
-}
-
-function keccak(input) {
-    return (keccak256 as any).array(input);
-}
-
-function hashChain(input: Uint8Array): Array<number> {
-    return keccak(blake2b(input));
-}
+import cryptoGost from '../libs/gost';
 
 function buildSeedHash(seedBytes: Uint8Array): Uint8Array {
     const nonce = new Uint8Array(converters.int32ToBytes(INITIAL_NONCE, true));
     const seedBytesWithNonce = concatUint8Arrays(nonce, seedBytes);
-    const seedHash = hashChain(seedBytesWithNonce);
-    return sha256(seedHash);
+    return cryptoGost.streebog256(seedBytesWithNonce);
 }
-
-function strengthenPassword(password: string, rounds: number = 5000): string {
-    while (rounds--) password = converters.byteArrayToHexString(sha256(password));
-    return password;
-}
-
 
 export default {
 
@@ -67,39 +32,23 @@ export default {
         }
 
         const privateKeyBytes = base58.decode(privateKey);
+        const signature = cryptoGost.sign(privateKeyBytes, dataBytes);
 
-        if (privateKeyBytes.length !== PRIVATE_KEY_LENGTH) {
-            throw new Error('Invalid public key');
-        }
-
-        const signature = axlsign.sign(privateKeyBytes, dataBytes, secureRandom.randomUint8Array(64));
         return base58.encode(signature);
-
     },
 
-    isValidSignature(dataBytes: Uint8Array, signature: string, publicKey: string): boolean {
-
+    verifySignature(publicKey: string, signature: string, dataBytes: Uint8Array) {
         if (!dataBytes || !(dataBytes instanceof Uint8Array)) {
             throw new Error('Missing or invalid data');
         }
-
-        if (!signature || typeof signature !== 'string') {
-            throw new Error('Missing or invalid signature');
-        }
-
         if (!publicKey || typeof publicKey !== 'string') {
-            throw new Error('Missing or invalid public key');
+            throw new Error('Missing or invalid publicKey key');
         }
 
-        const signatureBytes = base58.decode(signature);
         const publicKeyBytes = base58.decode(publicKey);
+        const signatureBytes = base58.decode(signature);
 
-        if (publicKeyBytes.length !== PUBLIC_KEY_LENGTH) {
-            throw new Error('Invalid public key');
-        }
-
-        return axlsign.verify(publicKeyBytes, dataBytes, signatureBytes);
-
+        return cryptoGost.verify(publicKeyBytes, signatureBytes, dataBytes);
     },
 
     buildTransactionId(dataBytes: Uint8Array): string {
@@ -108,9 +57,9 @@ export default {
             throw new Error('Missing or invalid data');
         }
 
-        const hash = blake2b(dataBytes);
-        return base58.encode(hash);
+        const hash = cryptoGost.streebog256(dataBytes);
 
+        return base58.encode(hash);
     },
 
     buildKeyPair(seed: string): IKeyPairBytes {
@@ -119,18 +68,22 @@ export default {
             throw new Error('Missing or invalid seed phrase');
         }
 
+
         const seedBytes = Uint8Array.from(converters.stringToByteArray(seed));
         const seedHash = buildSeedHash(seedBytes);
-        const keys = axlsign.generateKeyPair(seedHash);
 
+        const keys = cryptoGost.generateKey(seedHash);
+        const publicKey = new Uint8Array(keys.publicKey);
+        const privateKey = new Uint8Array(keys.privateKey);
         return {
-            privateKey: keys.private,
-            publicKey: keys.public
+            publicKey,
+            privateKey
         };
 
     },
 
-    isValidAddress(address: string) {
+
+    isValidAddress(address: string): boolean {
 
         if (!address || typeof address !== 'string') {
             throw new Error('Missing or invalid address');
@@ -144,7 +97,7 @@ export default {
 
         const key = addressBytes.slice(0, 22);
         const check = addressBytes.slice(22, 26);
-        const keyHash = hashChain(key).slice(0, 4);
+        const keyHash = cryptoGost.streebog256(key).slice(0, 4);
 
         for (let i = 0; i < 4; i++) {
             if (check[i] !== keyHash[i]) {
@@ -156,23 +109,25 @@ export default {
 
     },
 
-    buildRawAddress(publicKeyBytes: Uint8Array): string {
-
-        if (!publicKeyBytes || publicKeyBytes.length !== PUBLIC_KEY_LENGTH || !(publicKeyBytes instanceof Uint8Array)) {
+    buildRawAddress(publicKeyBytes: Uint8Array | ArrayBuffer): string {
+        if (publicKeyBytes instanceof ArrayBuffer) {
+            publicKeyBytes = new Uint8Array(publicKeyBytes);
+        }
+        if (!publicKeyBytes || publicKeyBytes.byteLength !== PUBLIC_KEY_LENGTH || !(publicKeyBytes instanceof Uint8Array)) {
             throw new Error('Missing or invalid public key');
         }
 
         const prefix = Uint8Array.from([ADDRESS_VERSION, config.getNetworkByte()]);
-        const publicKeyHashPart = Uint8Array.from(hashChain(publicKeyBytes).slice(0, 20));
+        const publicKeyHashPart = cryptoGost.streebog256(publicKeyBytes).slice(0, 20);
 
         const rawAddress = concatUint8Arrays(prefix, publicKeyHashPart);
-        const addressHash = Uint8Array.from(hashChain(rawAddress).slice(0, 4));
+        const addressHash = cryptoGost.streebog256(rawAddress).slice(0, 4);
 
         return base58.encode(concatUint8Arrays(rawAddress, addressHash));
 
     },
 
-    encryptSeed(seed: string, password: string, encryptionRounds?: number): string {
+    encryptSeed(seed: string, password: string, address: string): string {
 
         if (!seed || typeof seed !== 'string') {
             throw new Error('Seed is required');
@@ -182,12 +137,15 @@ export default {
             throw new Error('Password is required');
         }
 
-        password = strengthenPassword(password, encryptionRounds);
-        return CryptoJS.AES.encrypt(seed, password).toString();
+        if (!address || typeof address !== 'string') {
+            throw new Error('Address is required');
+        }
+
+        return cryptoGost.encrypt(password, seed, address);
 
     },
 
-    decryptSeed(encryptedSeed: string, password: string, encryptionRounds?: number): string {
+    decryptSeed(encryptedSeed: string, password: string, address: string): string {
 
         if (!encryptedSeed || typeof encryptedSeed !== 'string') {
             throw new Error('Encrypted seed is required');
@@ -197,10 +155,7 @@ export default {
             throw new Error('Password is required');
         }
 
-        password = strengthenPassword(password, encryptionRounds);
-        const hexSeed = CryptoJS.AES.decrypt(encryptedSeed, password);
-        return converters.hexStringToString(hexSeed.toString());
-
+        return cryptoGost.decrypt(password, encryptedSeed, address);
     },
 
     generateRandomUint32Array(length: number): Uint32Array {
@@ -211,10 +166,12 @@ export default {
 
         const a = secureRandom.randomUint8Array(length);
         const b = secureRandom.randomUint8Array(length);
+
         const result = new Uint32Array(length);
 
         for (let i = 0; i < length; i++) {
-            const hash = converters.byteArrayToHexString(sha256(`${a[i]}${b[i]}`));
+            const data = (cryptoGost.streebog256(`${a[i]}${b[i]}`));
+            const hash = cryptoGost.encodeHex(data.buffer);
             const randomValue = parseInt(hash.slice(0, 13), 16);
             result.set([randomValue], i);
         }
@@ -223,4 +180,6 @@ export default {
 
     }
 
-};
+}
+
+

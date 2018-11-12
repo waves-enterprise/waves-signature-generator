@@ -94,8 +94,11 @@ export const DATA_TX_SIZE_WITHOUT_ENTRIES = 52;
 export const DATA_ENTRIES_BYTE_LIMIT: number = 140 * 1024 - DATA_TX_SIZE_WITHOUT_ENTRIES; // 140 kb for the whole tx
 
 export const INITIAL_NONCE: number = 0;
+
 export const PRIVATE_KEY_LENGTH: number = 32;
-export const PUBLIC_KEY_LENGTH: number = 64;
+
+export const PUBLIC_KEY_LENGTH: number = 32;
+export const PUBLIC_KEY_LENGTH_GOST: number = 64;
 
 // That is to mark ByteProcessor instances which cannot be affected by user
 export const STUB_NAME = 'reservedName';
