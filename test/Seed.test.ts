@@ -39,21 +39,21 @@ describe('GOST crypto Seed tests', () => {
 
             beforeEach(() => {
                 configure = byte === MAINNET_BYTE ? MAINNET_GOST : TESTNET_GOST;
-                config.set({networkByte: byte});
+                config.set({networkByte: byte, crypto: 'gost'});
             });
 
             it('get address from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE, true);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.address).toBe(configure.ADDRESS);
             });
 
             it('get public key from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE,true);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.keyPair.publicKey).toBe(configure.PUBLIC_KEY);
             });
 
             it('get private key from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE,true);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.keyPair.privateKey).toBe(configure.PRIVATE_KEY);
             });
         });
@@ -69,21 +69,21 @@ describe('WAVES crypto Seed tests', () => {
 
             beforeEach(() => {
                 configure = byte === 'W'.charCodeAt(0) ? MAINNET : TESTNET;
-                config.set({networkByte: byte});
+                config.set({networkByte: byte, crypto: 'waves'});
             });
 
             it('get address from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE, false);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.address).toBe(configure.ADDRESS);
             });
 
             it('get public key from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE,false);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.keyPair.publicKey).toBe(configure.PUBLIC_KEY);
             });
 
             it('get private key from phrase', () => {
-                const seed = Seed.fromExistingPhrase(configure.PHRASE,false);
+                const seed = Seed.fromExistingPhrase(configure.PHRASE);
                 expect(seed.keyPair.privateKey).toBe(configure.PRIVATE_KEY);
             });
         });

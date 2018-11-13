@@ -1,11 +1,12 @@
 import { MAINNET_BYTE } from '../';
-import { IConfig, IConfigOptions } from './interface';
+import { IConfig, IConfigOptions, TCrypto } from './interface';
 
 
 const DEFAULT_CONFIG: IConfigOptions = {
     networkByte: MAINNET_BYTE,
     logLevel: 'warning',
-    minimalSeedLength: 15
+    minimalSeedLength: 15,
+    crypto: 'waves'
 };
 
 class Config implements IConfig {
@@ -18,6 +19,14 @@ class Config implements IConfig {
 
     public getLogLevel(): string {
         return this.props.logLevel;
+    }
+
+    public getCrypto(): TCrypto {
+        return this.props.crypto;
+    }
+
+    public isCryptoGost(): boolean {
+        return this.props.crypto === 'gost';
     }
 
     public set(config: Partial<IConfigOptions>) {

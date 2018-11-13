@@ -35,7 +35,7 @@ describe('Signature tests', () => {
         describe(`Network byte is ${byte}`, () => {
             beforeEach(() => {
                 configure = byte === MAINNET_BYTE ? MAINNET : TESTNET;
-                config.set({networkByte: byte});
+                config.set({networkByte: byte, crypto: 'gost'});
             });
 
             it('Permission tx object data serialization is correct', async () => {

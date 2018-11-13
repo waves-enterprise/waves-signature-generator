@@ -27,7 +27,7 @@ import {
 import {concatUint8Arrays} from '../utils/concat';
 import cryptoGost from '../utils/cryptoGost';
 import crypto from '../utils/crypto';
-
+import {config} from '../config/Config';
 import * as constants from '../constants';
 
 
@@ -84,10 +84,10 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
         }
 
         public getSignature(privateKey: string, isGost: boolean = true): Promise<string> {
-            const c = isGost ? cryptoGost : crypto;
-
             return this.getBytes().then((dataBytes) => {
-                return c.buildTransactionSignature(dataBytes, privateKey);
+                return config.isCryptoGost()
+                    ? cryptoGost.buildTransactionSignature(dataBytes, privateKey)
+                    : crypto.buildTransactionSignature(dataBytes, privateKey);
             });
         }
 

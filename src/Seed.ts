@@ -11,16 +11,15 @@ export class Seed {
     public readonly keyPair: IKeyPair;
     public readonly isGost: boolean;
 
-    constructor(phrase: string, isGost: boolean = false) {
+    constructor(phrase: string) {
         if (phrase.length < config.get('minimalSeedLength')) {
             throw new Error('Your seed length is less than allowed in config');
         }
 
-        this.isGost = isGost;
-        const keys = this.isGost ? utils.cryptoGost.buildKeyPair(phrase) : utils.crypto.buildKeyPair(phrase);
+        const keys = config.isCryptoGost() ? utils.cryptoGost.buildKeyPair(phrase) : utils.crypto.buildKeyPair(phrase);
 
         this.phrase = phrase;
-        this.address = this.isGost ? utils.cryptoGost.buildRawAddress(keys.publicKey) : utils.crypto.buildRawAddress(keys.publicKey);
+        this.address = config.isCryptoGost() ? utils.cryptoGost.buildRawAddress(keys.publicKey) : utils.crypto.buildRawAddress(keys.publicKey);
 
         this.keyPair = {
             privateKey: libs.base58.encode(keys.privateKey),
@@ -47,14 +46,14 @@ export class Seed {
         return isGost ? utils.cryptoGost.encryptSeed(seedPhrase, password, address) : utils.crypto.encryptSeed(seedPhrase, password);
     }
 
-    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, address: string, isGost: boolean = false): string {
+    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, address: string): string {
 
         const wrongPasswordMessage = 'The password is wrong';
 
         let phrase;
 
         try {
-            phrase = isGost ? utils.cryptoGost.decryptSeed(encryptedSeedPhrase, password, address) : utils.crypto.decryptSeed(encryptedSeedPhrase, password);
+            phrase = config.isCryptoGost() ? utils.cryptoGost.decryptSeed(encryptedSeedPhrase, password, address) : utils.crypto.decryptSeed(encryptedSeedPhrase, password);
         } catch (e) {
             throw new Error(wrongPasswordMessage);
         }
@@ -67,7 +66,7 @@ export class Seed {
 
     }
 
-    public static create(words: number = 15, isGost: boolean = false): Seed {
+    public static create(words: number = 15): Seed {
         const phrase = Seed._generateNewSeed(words);
         const minimumSeedLength = config.get('minimalSeedLength');
 
@@ -76,10 +75,10 @@ export class Seed {
             throw new Error(`The resulted seed length is less than the minimum length (${minimumSeedLength})`);
         }
 
-        return new Seed(phrase, isGost);
+        return new Seed(phrase);
     }
 
-    public static fromExistingPhrase(phrase: string, isGost: boolean = false): Seed {
+    public static fromExistingPhrase(phrase: string): Seed {
         const minimumSeedLength = config.get('minimalSeedLength');
 
         if (phrase.length < minimumSeedLength) {
@@ -87,12 +86,12 @@ export class Seed {
             throw new Error(`The resulted seed length is less than the minimum length (${minimumSeedLength})`);
         }
 
-        return new Seed(phrase, isGost);
+        return new Seed(phrase);
     }
 
-    private static _generateNewSeed(length: number, isGost: boolean = false): string {
+    private static _generateNewSeed(length: number): string {
 
-        const random = isGost ? utils.cryptoGost.generateRandomUint32Array(length) : utils.crypto.generateRandomUint32Array(length);
+        const random = config.isCryptoGost() ? utils.cryptoGost.generateRandomUint32Array(length) : utils.crypto.generateRandomUint32Array(length);
         const wordCount = dictionary.length;
         const phrase = [];
 
