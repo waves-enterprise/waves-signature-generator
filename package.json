@@ -13,6 +13,10 @@
     "crypto-js": "3.1.9-1",
     "@vostokplatform/crypto-gost-js": "2.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vostokplatform/waves-signature-generator.git"
+  },
   "scripts": {
     "postversion": "npm publish",
     "postpublish": "git push",
@@ -29,9 +33,9 @@
     "build": "npm run compile && npm run build-full && npm run build-partial && npm run uglify"
   },
   "devDependencies": {
-    "@types/jest": "^23.1.4",
-    "browserify": "^16.2.2",
-    "jest": "^23.2.0",
+    "@types/jest": "^23.3.9",
+    "browserify": "^16.2.3",
+    "jest": "^23.6.0",
     "uglify-js": "^3.4.7"
   }
 }
