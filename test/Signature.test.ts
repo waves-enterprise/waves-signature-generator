@@ -63,7 +63,7 @@ const permissionTxMockGost = {
 
 let configure: typeof TESTNET | typeof MAINNET;
 
-/*
+
 describe('GOST signature tests', () => {
     [MAINNET_BYTE, TESTNET_BYTE].forEach((byte) => {
         describe(`Network byte is ${byte}`, () => {
@@ -90,33 +90,22 @@ describe('GOST signature tests', () => {
         });
     });
 });
-*/
 
-// o4B9hew347W2WJPCsBvnWeeAvXJdPx2oMrJfbjBvyHj2pXcLAJCbhb4T8Yvim8SJ3jTCjiWuQ2gAQGCxRU8pTy9 //b58
-// 5qJ3fL6wgQb98Hzd9N6w2smzE1Q13tQ9ijLWxLUEDQvEV7MVteaUujgYwjAP6McEmNo3pAKCF9trs5U29iTmzzZZ
+
 describe('Waves signature tests', () => {
     [MAINNET_BYTE, TESTNET_BYTE].forEach((byte) => {
         describe(`Network byte is ${byte}`, () => {
             beforeEach(() => {
                 configure = byte === MAINNET_BYTE ? MAINNET : TESTNET;
                 config.set({networkByte: byte, crypto: 'waves'});
-                console.log('config crypto', config.get('crypto'))
-
-            });
-
-            it('Permission tx object data serialization is correct', async () => {
-                const signatureGenerator = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.PERMIT](permissionTxMockWaves);
-                const bytes = await signatureGenerator.getBytes();
-                // const b58 = base58.encode(bytes);
-                // console.log(b58);
-                const signature = await signatureGenerator.getSignature(MAINNET.keyPair.privateKey);
-                const isSignatureValid = crypto.isValidSignature(bytes, signature, MAINNET.keyPair.publicKey);
-                console.log('signature', isSignatureValid)
-                //expect(b64).toBe('ZgFK+y53q2mN6HIs7IPEhjUP9U7ciQuA46nXjF/ur1DIsFxPt0qTxzjvII5MudtyepRdPaw5NowLzbfBmNhaCLaPAURHm4HFLXycOHXq5AIHIHWnieAKJbF8K7sAAAFmmz5LKGEDAAABZps+SygBAAABZpvW4ag=');
             });
 
             it('Signature is valid', async () => {
-
+                const signatureGenerator = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.PERMIT](permissionTxMockWaves);
+                const bytes = await signatureGenerator.getBytes();
+                const signature = await signatureGenerator.getSignature(MAINNET.keyPair.privateKey);
+                const isSignatureValid = crypto.isValidSignature(bytes, signature, MAINNET.keyPair.publicKey);
+                expect(isSignatureValid).toBe(isSignatureValid);
             });
         });
     });
