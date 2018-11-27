@@ -98,7 +98,7 @@ export const INITIAL_NONCE: number = 0;
 export const PRIVATE_KEY_LENGTH: number = 32;
 
 export const PUBLIC_KEY_LENGTH: number = 32;
-export const PUBLIC_KEY_LENGTH_GOST: number = 64;
+export const PUBLIC_KEY_GOST_LENGTH: number = 64;
 
 // That is to mark ByteProcessor instances which cannot be affected by user
 export const STUB_NAME = 'reservedName';

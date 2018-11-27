@@ -49,12 +49,12 @@ function browserRandom(count, options) {
 
 function secureRandom(count, options) {
 
-    options = options || { type: 'Array' };
+    options = options || {type: 'Array'};
 
-    if (typeof window !== 'undefined' || typeof self !== 'undefined') {
-        return browserRandom(count, options);
-    } else if (typeof exports === 'object' && typeof module !== 'undefined') {
+    if (typeof exports === 'object' && typeof module !== 'undefined') {
         return nodeRandom(count, options);
+    } else if (typeof window !== 'undefined' || typeof self !== 'undefined') {
+        return browserRandom(count, options);
     } else {
         throw new Error('Your environment is not defined');
     }
@@ -67,15 +67,15 @@ export default {
     secureRandom: secureRandom,
 
     randomArray(byteCount) {
-        return secureRandom(byteCount, { type: 'Array' });
+        return secureRandom(byteCount, {type: 'Array'});
     },
 
     randomUint8Array(byteCount) {
-        return secureRandom(byteCount, { type: 'Uint8Array' });
+        return secureRandom(byteCount, {type: 'Uint8Array'});
     },
 
     randomBuffer(byteCount) {
-        return secureRandom(byteCount, { type: 'Buffer' });
+        return secureRandom(byteCount, {type: 'Buffer'});
     }
 
 };

@@ -85,6 +85,7 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
 
         public getSignature(privateKey: string, isGost: boolean = true): Promise<string> {
             return this.getBytes().then((dataBytes) => {
+                console.log('crypto', config.isCryptoGost())
                 return config.isCryptoGost()
                     ? cryptoGost.buildTransactionSignature(dataBytes, privateKey)
                     : crypto.buildTransactionSignature(dataBytes, privateKey);
@@ -270,7 +271,7 @@ const CANCEL_LEASING = generate<ICANCEL_LEASING_PROPS>([
     new Base58('senderPublicKey'),
     new Long('fee'),
     new Long('timestamp'),
-    new Base58('transactionId')
+    new Base58('leaseId')
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.CANCEL_LEASING] = CANCEL_LEASING;
