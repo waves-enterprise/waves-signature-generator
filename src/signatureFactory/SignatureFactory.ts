@@ -85,7 +85,6 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
 
         public getSignature(privateKey: string, isGost: boolean = true): Promise<string> {
             return this.getBytes().then((dataBytes) => {
-                console.log('crypto', config.isCryptoGost())
                 return config.isCryptoGost()
                     ? cryptoGost.buildTransactionSignature(dataBytes, privateKey)
                     : crypto.buildTransactionSignature(dataBytes, privateKey);
