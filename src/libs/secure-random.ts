@@ -51,14 +51,13 @@ function secureRandom(count, options) {
 
     options = options || {type: 'Array'};
 
-    if (typeof window !== 'undefined' || typeof self !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof module === 'undefined') {
         return browserRandom(count, options);
     } else if (typeof exports === 'object' && typeof module !== 'undefined') {
         return nodeRandom(count, options);
     } else {
         throw new Error('Your environment is not defined');
     }
-
 }
 
 
