@@ -51,7 +51,7 @@ function secureRandom(count, options) {
 
     options = options || {type: 'Array'};
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof exports === 'undefined') {
         return browserRandom(count, options);
     } else if (typeof exports === 'object' && typeof module !== 'undefined') {
         return nodeRandom(count, options);
