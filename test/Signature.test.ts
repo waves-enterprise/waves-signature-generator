@@ -76,8 +76,8 @@ describe('GOST signature tests', () => {
                 // todo test on zero dueTimestamp
                 const signatureGenerator = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.PERMIT](permissionTxMockGost);
                 const bytes = await signatureGenerator.getBytes();
-                const b64 = btoa(String.fromCharCode.apply(null, bytes));
-                expect(b64).toBe('ZgFK+y53q2mN6HIs7IPEhjUP9U7ciQuA46nXjF/ur1DIsFxPt0qTxzjvII5MudtyepRdPaw5NowLzbfBmNhaCLaPAURHm4HFLXycOHXq5AIHIHWnieAKJbF8K7sAAAFmmz5LKGEDAAABZps+SygBAAABZpvW4ag=');
+                const stringAsUriComponent = encodeURIComponent(String.fromCharCode.apply(null, bytes));
+                expect(stringAsUriComponent).toBe('f%01J%C3%BB.w%C2%ABi%C2%8D%C3%A8r%2C%C3%AC%C2%83%C3%84%C2%865%0F%C3%B5N%C3%9C%C2%89%0B%C2%80%C3%A3%C2%A9%C3%97%C2%8C_%C3%AE%C2%AFP%C3%88%C2%B0%5CO%C2%B7J%C2%93%C3%878%C3%AF%20%C2%8EL%C2%B9%C3%9Brz%C2%94%5D%3D%C2%AC96%C2%8C%0B%C3%8D%C2%B7%C3%81%C2%98%C3%98Z%08%C2%B6%C2%8F%01DG%C2%9B%C2%81%C3%85-%7C%C2%9C8u%C3%AA%C3%A4%02%07%20u%C2%A7%C2%89%C3%A0%0A%25%C2%B1%7C%2B%C2%BB%00%00%01f%C2%9B%3EK(a%03%00%00%01f%C2%9B%3EK(%01%00%00%01f%C2%9B%C3%96%C3%A1%C2%A8');
             });
 
             it('Signature is valid', async () => {

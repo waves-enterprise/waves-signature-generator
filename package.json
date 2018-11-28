@@ -17,7 +17,7 @@
     "postversion": "npm publish",
     "postpublish": "git push",
     "prepare": "npm run build",
-    "test": "npm run compile-test && jest",
+    "test": "npm run compile-test && jest --config jest.config.json",
     "compile": "tsc -p ./",
     "compile-test": "tsc -p ./test",
     "prepublish": "npm run test",
