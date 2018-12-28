@@ -321,6 +321,8 @@ const SET_SCRIPT = generate<ISET_SCRIPT_PROPS>([
     new Base58('senderPublicKey'),
     constants.SET_SCRIPT_LANG_VERSION,
     new Base64('script'),
+    new StringWithLength('name'),
+    new StringWithLength('description'),
     new Long('fee'),
     new Long('timestamp')
 ]);
