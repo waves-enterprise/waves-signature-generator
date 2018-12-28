@@ -64,6 +64,28 @@ const permissionTxMockGost = {
 let configure: typeof TESTNET | typeof MAINNET;
 
 
+/*const scriptData = {
+    chainId: 84,
+    "fee": '5000000',
+    "timestamp": 1545992919891,
+    "script": "base64:AQQAAAAHJG1hdGNoMAUAAAACdHgG+RXSzQ==",
+    "name": "faucet",
+    "description": "",
+    version: 1,
+    type: 13,
+    senderPublicKey: 'F2W3jcpP1acrH62FVs97FkMPoqkvumwkXD7BepkZgwWM'
+};
+
+
+//TnUEn6UfLA6cH4rYYhukjFsGMyFcHaWpjgr1y6qQfzgLYBeqDmnkjN95VmktWRG6WZgWZr95FdMhgcStr8RhS3r6sUAe84QFCYC8dQuiBmZFPjY2XEuJU8JEN
+//TnUEn6UfLA6cH4rYYhukjFsGMyFcHaWpjgr1y6qQfzgLYBeqDmnkjN95VmktWRG6WZgWZr95FdMhgcStr8RhS3r6sUAe84QFCYC8dQuiBmZFPjY2XEuJU8JEN
+
+const signatureGenerator = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT](scriptData);
+signatureGenerator.getBytes().then(bytes => {
+    const b = base58.encode(bytes);
+    console.log(b)
+});*/
+
 describe('GOST signature tests', () => {
     [MAINNET_BYTE, TESTNET_BYTE].forEach((byte) => {
         describe(`Network byte is ${byte}`, () => {
