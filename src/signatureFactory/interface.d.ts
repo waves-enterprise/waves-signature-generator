@@ -81,8 +81,11 @@ export interface IMASS_TRANSFER_PROPS extends IDEFAULT_PROPS {
 }
 
 export interface IDATA_PROPS extends IDEFAULT_PROPS {
+    senderPublicKey: string;
+    authorPublicKey: string;
     data: Array<IDATA_ENTRY>;
     fee: string;
+    timestamp: number;
 }
 
 export interface IORDER_PROPS extends IDEFAULT_PROPS {
