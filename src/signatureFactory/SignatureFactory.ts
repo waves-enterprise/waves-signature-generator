@@ -308,8 +308,8 @@ const DATA = generate<IDATA_PROPS>([
     new Base58('senderPublicKey'),
     new Base58('authorPublicKey'),
     new DataEntries('data'),
-    new Long('fee'),
-    new Long('timestamp')
+    new Long('timestamp'),
+    new Long('fee')
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DATA] = DATA;
