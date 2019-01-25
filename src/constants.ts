@@ -4,7 +4,8 @@ export const PERMISSION_TRANSACTION_ROLE = {
     DEX: 'dex',
     PERMISSIONER: 'permissioner',
     BLACKLISTER: 'blacklister',
-    BANNED: 'banned'
+    BANNED: 'banned',
+    CONTRACT_DEVELOPER: 'contract_developer'
 };
 
 export const PERMISSION_TRANSACTION_ROLE_BYTE ={
@@ -13,7 +14,8 @@ export const PERMISSION_TRANSACTION_ROLE_BYTE ={
     DEX: 3,
     PERMISSIONER: 4,
     BLACKLISTER: 5,
-    BANNED: 6
+    BANNED: 6,
+    CONTRACT_DEVELOPER: 7
 };
 
 export const enum PERMISSION_TRANSACTION_OPERATION_TYPE {
