@@ -198,7 +198,8 @@ const ISSUE = generate<IISSUE_PROPS>([
     new Bool('reissuable'),
     new Long('fee'),
     new Long('timestamp'),
-    0 // Byte for script smart assets.
+    1, // 1 - if script exists, and 0 if there's no script
+    new Base64('script') // Byte for script smart assets.
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.ISSUE] = ISSUE;
