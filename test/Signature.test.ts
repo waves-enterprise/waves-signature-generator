@@ -86,6 +86,25 @@ signatureGenerator.getBytes().then(bytes => {
     console.log(b)
 });*/
 
+const issueWithScript = {
+    "type": 3,
+    "id": "EMN4GrZHZKMfHVpiaM6H9ejfjmfqrV6h6DSPHKfLCPiw",
+    "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
+    "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+    "fee": '100000000',
+    "timestamp": 1549446741610,
+    "version": 2,
+    "assetId": "EMN4GrZHZKMfHVpiaM6H9ejfjmfqrV6h6DSPHKfLCPiw",
+    "name": "test-token3",
+    "quantity": '1000',
+    "reissuable": false,
+    precision: 5,
+    "decimals": 5,
+    "description": "",
+    "script": "base64:AQa3b8tH",
+    chainId: 'T'.charCodeAt(0)
+};
+
 describe('GOST signature tests', () => {
     [MAINNET_BYTE, TESTNET_BYTE].forEach((byte) => {
         describe(`Network byte is ${byte}`, () => {
@@ -128,6 +147,18 @@ describe('Waves signature tests', () => {
                 const signature = await signatureGenerator.getSignature(MAINNET.keyPair.privateKey);
                 const isSignatureValid = crypto.isValidSignature(bytes, signature, MAINNET.keyPair.publicKey);
                 expect(isSignatureValid).toBe(isSignatureValid);
+
+
+               /* const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE](issueWithScript);
+                // const b = await s.getBytes();
+                // console.log(b);
+                // console.log(base58.encode(b))
+
+                s.getBytes().then(bytes => {
+
+                    const b = base58.encode(bytes);
+                    console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(', '))
+                });*/
             });
         });
     });
