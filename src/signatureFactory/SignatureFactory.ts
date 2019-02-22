@@ -307,6 +307,7 @@ const DATA = generate<IDATA_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.DATA,
     constants.TRANSACTION_TYPE_VERSION.DATA,
     new Base58('senderPublicKey'),
+    new Base58('authorPublicKey'),
     new DataEntries('data'),
     new Long('timestamp'),
     new Long('fee')
