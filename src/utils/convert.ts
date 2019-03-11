@@ -1,6 +1,6 @@
-import { TBuffer } from '../interface';
+import {TBuffer} from '../interface';
 import converters from '../libs/converters';
-import { BigNumber } from '@waves/data-entities';
+import {BigNumber} from '@waves/data-entities';
 
 
 function performBitwiseAnd(a: BigNumber, b: BigNumber): number {
@@ -61,6 +61,7 @@ export default {
 
     longToByteArray(input: number): number[] {
 
+
         if (typeof input !== 'number') {
             throw new Error('Numeric input is expected');
         }
@@ -76,19 +77,25 @@ export default {
     },
 
     bigNumberToByteArray(input: BigNumber): number[] {
-
         if (!(input instanceof BigNumber)) {
             throw new Error('BigNumber input is expected');
         }
 
+        const isMinus = input.lt(new BigNumber(0));
         const performBitwiseAnd255 = performBitwiseAnd.bind(null, new BigNumber(255));
-
-        const bytes = new Array(7);
-        for (let k = 7; k >= 0; k--) {
-            bytes[k] = performBitwiseAnd255(input);
-            input = input.div(256);
+        if (isMinus) {
+            input = input.plus(1, 10);
         }
 
+        const bytes = new Array(8);
+
+        for (let k = 7; k >= 0; k--) {
+            bytes[k] = performBitwiseAnd255(input);
+            if (isMinus) {
+                bytes[k] = (~bytes[k]) & 255;
+            }
+            input = input.div(256);
+        }
         return bytes;
 
     },
