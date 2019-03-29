@@ -8,7 +8,7 @@ export const PERMISSION_TRANSACTION_ROLE = {
     CONTRACT_DEVELOPER: 'contract_developer'
 };
 
-export const PERMISSION_TRANSACTION_ROLE_BYTE ={
+export const PERMISSION_TRANSACTION_ROLE_BYTE = {
     MINER: 1,
     ISSUER: 2,
     DEX: 3,
@@ -45,7 +45,8 @@ export const enum TRANSACTION_TYPE_NUMBER {
     DATA = 12,
     SET_SCRIPT = 13,
     SPONSORSHIP = 14,
-    PERMIT = 102
+    PERMIT = 102,
+    DOCKER_CREATE = 103
 }
 
 export const enum TRANSACTION_TYPE {
@@ -61,7 +62,8 @@ export const enum TRANSACTION_TYPE {
     DATA = 'data',
     SET_SCRIPT = 'setScript',
     SPONSORSHIP = 'sponsorship',
-    PERMIT = 'permit'
+    PERMIT = 'permit',
+    DOCKER_CREATE = 'dockerCreate'
 }
 
 export const enum TRANSACTION_TYPE_VERSION {
@@ -77,7 +79,8 @@ export const enum TRANSACTION_TYPE_VERSION {
     DATA = 1,
     SET_SCRIPT = 1,
     SPONSORSHIP = 1,
-    PERMIT = 1
+    PERMIT = 1,
+    DOCKER_CREATE = 1
 }
 
 export const WAVES_ID = 'WAVES';
@@ -93,6 +96,13 @@ export const SET_SCRIPT_LANG_VERSION: number = 1;
 
 export const TRANSFER_ATTACHMENT_BYTE_LIMIT: number = 140;
 export const DATA_TX_SIZE_WITHOUT_ENTRIES = 52;
+
+/*
+todo
+*  Лимит на всю транзакцию — 150 Кб. Постоянные значения которые идут всегда в
+*  транзакции 152 байта для waves crypto и 216 байт для ГОСТ crypto.
+*  Изменяется размер публичных ключе с 32 до 64 байт.
+*/
 export const DATA_ENTRIES_BYTE_LIMIT: number = 140 * 1024 - DATA_TX_SIZE_WITHOUT_ENTRIES; // 140 kb for the whole tx
 
 export const INITIAL_NONCE: number = 0;

@@ -5,7 +5,7 @@ import {
     Base58, Base64,
     Bool,
     Byte,
-    ByteProcessor, DataEntries, IDATA_PROPS, IMASS_TRANSFER_PROPS, ISET_SCRIPT_PROPS, ISPONSORSHIP_PROPS,
+    ByteProcessor, DataEntries, DockerCreateParamsEntries, IDATA_PROPS, IMASS_TRANSFER_PROPS, ISET_SCRIPT_PROPS, ISPONSORSHIP_PROPS,
     Long,
     MandatoryAssetId, OrderType,
     Recipient,
@@ -344,3 +344,19 @@ const SPONSORSHIP = generate<ISPONSORSHIP_PROPS>([
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.SPONSORSHIP] = SPONSORSHIP;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.SPONSORSHIP] = SPONSORSHIP;
+
+const DOCKER_CREATE = generate<IDATA_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
+    constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
+    new Base58('senderPublicKey'),
+    new Base58('authorPublicKey'),
+    new StringWithLength('image'),
+    new StringWithLength('imageHash'),
+    new StringWithLength('contractName'),
+    new DockerCreateParamsEntries('data'),
+    new Long('fee'),
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE] = DOCKER_CREATE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE] = DOCKER_CREATE;

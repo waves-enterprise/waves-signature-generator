@@ -96,8 +96,8 @@ export class Short extends ByteProcessor {
 }
 
 export class StringWithLength extends ByteProcessor {
-    public process(value: string) {
-        const bytesWithLength = convert.stringToByteArrayWithSize(value);
+    public process(value: string, byteLength: number = 2) {
+        const bytesWithLength = convert.stringToByteArrayWithSize(value, byteLength);
         return Promise.resolve(Uint8Array.from(bytesWithLength));
     }
 }
@@ -303,6 +303,53 @@ export class DataEntries extends ByteProcessor {
             return Promise.all(entries.map((entry) => {
                 const prependKeyBytes = (valueBytes) => {
                     return StringWithLength.prototype.process.call(this, entry.key).then((keyBytes) => {
+                        return concatUint8Arrays(keyBytes, valueBytes);
+                    });
+                };
+
+                switch (entry.type) {
+                    case 'integer':
+                        return IntegerDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                    case 'boolean':
+                        return BooleanDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                    case 'binary':
+                        return BinaryDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                    case 'string':
+                        return StringDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                    default:
+                        throw new Error(`There is no data type "${entry.type}"`);
+                }
+            })).then((entriesBytes) => {
+                const bytes = concatUint8Arrays(lengthBytes, ...entriesBytes);
+                if (bytes.length > DATA_ENTRIES_BYTE_LIMIT) throw new Error('Data transaction is too large (140KB max)');
+                return bytes;
+            });
+        } else {
+            return Promise.resolve(Uint8Array.from([0, 0]));
+        }
+    }
+}
+
+
+/*
+same as data tx except for string and binary entries - they have 4 bytes length (instead of 2 bytes in data tx)
+* */
+export class DockerCreateParamsEntries extends ByteProcessor {
+    public process(entries: any[]) {
+        const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length));
+        if (entries.length) {
+            return Promise.all(entries.map((entry) => {
+                const prependKeyBytes = (valueBytes) => {
+
+                    // for docker tx data entries string and binary types have 4 byte length
+                    let byteLength;
+                    if (entry.type === 'string' || entry.type === 'binary') {
+                        byteLength = 4
+                    } else {
+                        byteLength = 2;
+                    }
+
+                    return StringWithLength.prototype.process.call(this, entry.key, byteLength).then((keyBytes) => {
                         return concatUint8Arrays(keyBytes, valueBytes);
                     });
                 };
