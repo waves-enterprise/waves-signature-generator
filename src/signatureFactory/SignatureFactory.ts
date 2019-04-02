@@ -360,3 +360,17 @@ const DOCKER_CREATE = generate<IDATA_PROPS>([
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE] = DOCKER_CREATE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE] = DOCKER_CREATE;
+
+const DOCKER_CALL = generate<IDATA_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
+    constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
+    new Base58('senderPublicKey'),
+    new Base58('authorPublicKey'),
+    new StringWithLength('contractId'),
+    new DockerCreateParamsEntries('data'),
+    new Long('fee'),
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL] = DOCKER_CALL;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CALL] = DOCKER_CALL;

@@ -46,7 +46,8 @@ export const enum TRANSACTION_TYPE_NUMBER {
     SET_SCRIPT = 13,
     SPONSORSHIP = 14,
     PERMIT = 102,
-    DOCKER_CREATE = 103
+    DOCKER_CREATE = 103,
+    DOCKER_CALL = 104
 }
 
 export const enum TRANSACTION_TYPE {
@@ -63,7 +64,8 @@ export const enum TRANSACTION_TYPE {
     SET_SCRIPT = 'setScript',
     SPONSORSHIP = 'sponsorship',
     PERMIT = 'permit',
-    DOCKER_CREATE = 'dockerCreate'
+    DOCKER_CREATE = 'dockerCreate',
+    DOCKER_CALL = 'dockerCall'
 }
 
 export const enum TRANSACTION_TYPE_VERSION {
@@ -80,7 +82,8 @@ export const enum TRANSACTION_TYPE_VERSION {
     SET_SCRIPT = 1,
     SPONSORSHIP = 1,
     PERMIT = 1,
-    DOCKER_CREATE = 1
+    DOCKER_CREATE = 1,
+    DOCKER_CALL = 1
 }
 
 export const WAVES_ID = 'WAVES';
