@@ -132,6 +132,7 @@ export interface IDOCKERCREATE_PROPS extends IDEFAULT_PROPS {
     fee: string;
     imageHash: string;
     image: string;
+    contractName: string;
 }
 
 
@@ -155,7 +156,7 @@ export type TTX_NUMBER_MAP = {
     13: ISignatureGeneratorConstructor<ISET_SCRIPT_PROPS>;
     14: ISignatureGeneratorConstructor<ISPONSORSHIP_PROPS>;
     102: ISignatureGeneratorConstructor<IPERMIT_PROPS>;
-
+    103: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
     104: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
 }
 
@@ -174,5 +175,6 @@ export type TTX_TYPE_MAP = {
     sponsorship: ISignatureGeneratorConstructor<ISPONSORSHIP_PROPS>;
     permit: ISignatureGeneratorConstructor<IPERMIT_PROPS>;
 
+    dockerCreate: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
     dockerCall: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
 }

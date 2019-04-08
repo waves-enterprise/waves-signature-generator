@@ -149,7 +149,7 @@ describe('Waves signature tests', () => {
                 expect(isSignatureValid).toBe(isSignatureValid);
 
 
-                const seed = {
+               /* const seed = {
                     keyPair: {
                         privateKey: '3hFkg3XwC827R7CzQLbpXQzZpMS98S3Jrv8wYY5LTtn7',
                         publicKey:
@@ -201,17 +201,32 @@ describe('Waves signature tests', () => {
                     "timestamp": 1554293583094
                 };
 
+                const dcMock2 = {
+                    "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    authorPublicKey: "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
+                    "fee": "15000000",
+                    "image": "image",
+                    "imageHash": "imageHash",
+                    "contractName": "contractName",
+                    "type": 103,
+                    "version": 1,
+                    "timestamp": 1554293583094,
+                    params: []
+                };*/
 
-                const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CALL](dcMock);
+
+
+                /*const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CREATE](dcMock2);
                 // const bytes2 = await signatureGenerator2.getBytes();
                 // const signature2 = await signatureGenerator2.getSignature(seed.keyPair.privateKey);
                 // console.log('signature2', bytes2);
 
                 signatureGenerator2.getBytes().then(bytes => {
-
                     //    const b = base58.encode(bytes);
                     console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(','))
                 })
+                */
                 // /docker call
 
 
