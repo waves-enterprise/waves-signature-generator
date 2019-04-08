@@ -2,18 +2,29 @@ import {
     Alias,
     AssetId,
     Attachment,
-    Base58, Base64,
+    Base58,
+    Base58WithLength,
+    Base64,
     Bool,
     Byte,
-    ByteProcessor, DataEntries, DockerCreateParamsEntries, IDATA_PROPS, IMASS_TRANSFER_PROPS, ISET_SCRIPT_PROPS, ISPONSORSHIP_PROPS,
+    ByteProcessor,
+    DataEntries,
+    DockerCreateParamsEntries,
+    IDATA_PROPS,
+    IMASS_TRANSFER_PROPS,
+    ISET_SCRIPT_PROPS,
+    ISPONSORSHIP_PROPS,
     Long,
-    MandatoryAssetId, OrderType,
+    MandatoryAssetId,
+    OrderType,
     Recipient,
-    StringWithLength, Transfers,
+    StringWithLength,
+    Transfers,
     PermissionTarget,
     PermissionOpType,
     PermissionRole,
-    PermissionDueTimestamp
+    PermissionDueTimestamp,
+    IDOCKERCREATE_PROPS, IDOCKERCALL_PROPS
 } from '..';
 import {
     IPERMIT_PROPS,
@@ -29,7 +40,7 @@ import cryptoGost from '../utils/cryptoGost';
 import crypto from '../utils/crypto';
 import {config} from '../config/Config';
 import * as constants from '../constants';
-
+import base58 from '../libs/base58';
 
 export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGeneratorConstructor<T> {
 
@@ -345,7 +356,7 @@ const SPONSORSHIP = generate<ISPONSORSHIP_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.SPONSORSHIP] = SPONSORSHIP;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.SPONSORSHIP] = SPONSORSHIP;
 
-const DOCKER_CREATE = generate<IDATA_PROPS>([
+const DOCKER_CREATE = generate<IDOCKERCREATE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
     constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
     new Base58('senderPublicKey'),
@@ -353,7 +364,7 @@ const DOCKER_CREATE = generate<IDATA_PROPS>([
     new StringWithLength('image'),
     new StringWithLength('imageHash'),
     new StringWithLength('contractName'),
-    new DockerCreateParamsEntries('data'),
+    new DockerCreateParamsEntries('params'),
     new Long('fee'),
     new Long('timestamp')
 ]);
@@ -361,13 +372,12 @@ const DOCKER_CREATE = generate<IDATA_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE] = DOCKER_CREATE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE] = DOCKER_CREATE;
 
-const DOCKER_CALL = generate<IDATA_PROPS>([
-    constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
-    constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
+const DOCKER_CALL = generate<IDOCKERCALL_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL,
+    constants.TRANSACTION_TYPE_VERSION.DOCKER_CALL,
     new Base58('senderPublicKey'),
-    new Base58('authorPublicKey'),
-    new StringWithLength('contractId'),
-    new DockerCreateParamsEntries('data'),
+    new Base58WithLength('contractId'),
+    new DockerCreateParamsEntries('params'),
     new Long('fee'),
     new Long('timestamp')
 ]);

@@ -111,7 +111,6 @@ export default {
     },
 
     stringToByteArrayWithSize(input: string, maxLengthBytesCount = 2): number[] {
-
         if (typeof input !== 'string') {
             throw new Error('String input is expected');
         }
@@ -122,14 +121,13 @@ export default {
 
         switch (maxLengthBytesCount) {
             // binary and string data entries of docker create tx have 4 bytes length
-            case 4: lengthBytes = converters.int32ToBytes(stringBytes.length, true);
-            break;
-            case 2: lengthBytes = converters.int16ToBytes(stringBytes.length, true); // 2 or anything but 4
+            case 4:
+                lengthBytes = converters.int32ToBytes(stringBytes.length, true);
+                break;
+            case 2:
+                lengthBytes = converters.int16ToBytes(stringBytes.length, true); // 2 or anything but 4
         }
 
         return [...lengthBytes, ...stringBytes];
     }
-
-
-
 };

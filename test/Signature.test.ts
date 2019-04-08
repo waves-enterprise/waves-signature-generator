@@ -110,7 +110,7 @@ describe('GOST signature tests', () => {
         describe(`Network byte is ${byte}`, () => {
             beforeEach(() => {
                 configure = byte === MAINNET_BYTE ? MAINNET : TESTNET;
-                config.set({networkByte: byte, crypto: 'gost'});
+                config.set({networkByte: 84, crypto: 'gost'});
             });
 
             it('Permission tx object data serialization is correct', async () => {
@@ -138,7 +138,7 @@ describe('Waves signature tests', () => {
         describe(`Network byte is ${byte}`, () => {
             beforeEach(() => {
                 configure = byte === MAINNET_BYTE ? MAINNET : TESTNET;
-                config.set({networkByte: byte, crypto: 'waves'});
+                config.set({networkByte: 84, crypto: 'waves'});
             });
 
             it('Signature is valid', async () => {
@@ -149,16 +149,82 @@ describe('Waves signature tests', () => {
                 expect(isSignatureValid).toBe(isSignatureValid);
 
 
-               /* const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE](issueWithScript);
-                // const b = await s.getBytes();
-                // console.log(b);
-                // console.log(base58.encode(b))
+                const seed = {
+                    keyPair: {
+                        privateKey: '3hFkg3XwC827R7CzQLbpXQzZpMS98S3Jrv8wYY5LTtn7',
+                        publicKey:
+                            '3RBMLDrd27WAfv84abTZSZTE5ZBsp5JX6dNz3YteQwNz'
+                    }
+                };
 
-                s.getBytes().then(bytes => {
 
-                    const b = base58.encode(bytes);
-                    console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(', '))
-                });*/
+                // docker call
+                const dockerCallTX = {
+                    "senderPublicKey": seed.keyPair.publicKey,
+                    "authorPublicKey": seed.keyPair.publicKey,
+                    contractId: '2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu',
+                    "params": [],
+                    "timestamp": Date.now(),
+                    "fee": 500000
+                };
+
+                const dcMock = {
+                    "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
+                    "fee": "15000000",
+                    "contractId": "2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu",
+                    "id": "BpzGbk6Mvtofsde3DGVR2Lx7nEUwxWrsfHcvsaY9TZH9",
+                    "type": 104,
+                    "params": [
+                        {
+                            key: "number",
+                            type: "integer",
+                            value: 1
+                        },
+                        {
+                            key: "string",
+                            type: "string",
+                            value: "pizda"
+                        },
+                        {
+                            key: "binary",
+                            type: "binary",
+                            value: "base64:cGl6ZGVub2Noa2E="
+                        },
+                        {
+                            key: "boolean",
+                            type: "boolean",
+                            value: true
+                        }
+                    ],
+                    "version": 1,
+                    "timestamp": 1554293583094
+                };
+
+
+                const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CALL](dcMock);
+                // const bytes2 = await signatureGenerator2.getBytes();
+                // const signature2 = await signatureGenerator2.getSignature(seed.keyPair.privateKey);
+                // console.log('signature2', bytes2);
+
+                signatureGenerator2.getBytes().then(bytes => {
+
+                    //    const b = base58.encode(bytes);
+                    console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(','))
+                })
+                // /docker call
+
+
+                /* const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE](issueWithScript);
+                 // const b = await s.getBytes();
+                 // console.log(b);
+                 // console.log(base58.encode(b))
+
+                 s.getBytes().then(bytes => {
+
+                     const b = base58.encode(bytes);
+                     console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(', '))
+                 });*/
             });
         });
     });

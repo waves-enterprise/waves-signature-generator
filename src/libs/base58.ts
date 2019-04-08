@@ -48,7 +48,7 @@ export default {
 
     },
 
-    decode(string): Uint8Array {
+    decode(string = ''): Uint8Array {
 
         if (!string.length) return new Uint8Array(0);
 

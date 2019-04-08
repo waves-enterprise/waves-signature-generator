@@ -12,6 +12,7 @@ import {
     PERMISSION_TRANSACTION_OPERATION_TYPE,
     PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE
 } from '../constants';
+import converters from "../libs/converters";
 
 // NOTE : Waves asset ID in blockchain transactions equals to an empty string
 function blockchainifyAssetId(assetId: string): string {
@@ -46,13 +47,32 @@ export class Base58 extends ByteProcessor {
     }
 }
 
-export class Base64 extends ByteProcessor {
+export class Base58WithLength extends ByteProcessor {
     public process(value: string) {
+        const bytes = Array.from(base58.decode(value));
+
+        const lengthBytes = converters.int16ToBytes(bytes.length, true);
+
+        const result = Uint8Array.from([...lengthBytes, ...bytes]);
+
+        return Promise.resolve(result);
+    }
+}
+
+export class Base64 extends ByteProcessor {
+    public process(value: string, byteLength: number = 2) {
         if (typeof value !== 'string') throw new Error('You should pass a string to BinaryDataEntry constructor');
         if (value.slice(0, 7) !== 'base64:') throw new Error('Blob should be encoded in base64 and prefixed with "base64:"');
         const b64 = value.slice(7); // Getting the string payload
         const bytes = Uint8Array.from(toByteArray(b64));
-        const lengthBytes = Uint8Array.from(convert.shortToByteArray(bytes.length));
+
+        let lengthBytes;
+        if (byteLength === 4) {
+            lengthBytes = Uint8Array.from(converters.int32ToBytes(bytes.length, true));
+        } else {
+            // 2 bytes for the length otherwise
+            lengthBytes = Uint8Array.from(convert.shortToByteArray(bytes.length));
+        }
         return Promise.resolve(concatUint8Arrays(lengthBytes, bytes));
     }
 }
@@ -296,6 +316,24 @@ export class StringDataEntry extends ByteProcessor {
     }
 }
 
+export class BinaryDockerParamEntry extends ByteProcessor {
+    public process(value: string) {
+        return Base64.prototype.process.call(this, value, 4).then((binaryBytes) => {
+            const typeByte = Uint8Array.from([BINARY_DATA_TYPE]);
+            return Promise.resolve(concatUint8Arrays(typeByte, binaryBytes));
+        });
+    }
+}
+
+export class StringDockerParamEntry extends ByteProcessor {
+    public process(value: string) {
+        return StringWithLength.prototype.process.call(this, value, 4).then((stringBytes) => {
+            const typeByte = Uint8Array.from([STRING_DATA_TYPE]);
+            return concatUint8Arrays(typeByte, stringBytes);
+        });
+    }
+}
+
 export class DataEntries extends ByteProcessor {
     public process(entries: any[]) {
         const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length));
@@ -334,22 +372,23 @@ export class DataEntries extends ByteProcessor {
 /*
 same as data tx except for string and binary entries - they have 4 bytes length (instead of 2 bytes in data tx)
 * */
+
+/* todo rename to DockerParamsEntries*/
 export class DockerCreateParamsEntries extends ByteProcessor {
     public process(entries: any[]) {
         const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length));
         if (entries.length) {
             return Promise.all(entries.map((entry) => {
+                // for docker tx data entries string and binary types have 4 byte length
+                let byteLength;
+                if (entry.type === 'string' || entry.type === 'binary') {
+                    byteLength = 4
+                } else {
+                    byteLength = 2;
+                }
+
                 const prependKeyBytes = (valueBytes) => {
-
-                    // for docker tx data entries string and binary types have 4 byte length
-                    let byteLength;
-                    if (entry.type === 'string' || entry.type === 'binary') {
-                        byteLength = 4
-                    } else {
-                        byteLength = 2;
-                    }
-
-                    return StringWithLength.prototype.process.call(this, entry.key, byteLength).then((keyBytes) => {
+                    return StringWithLength.prototype.process.call(this, entry.key).then((keyBytes) => {
                         return concatUint8Arrays(keyBytes, valueBytes);
                     });
                 };
@@ -360,9 +399,9 @@ export class DockerCreateParamsEntries extends ByteProcessor {
                     case 'boolean':
                         return BooleanDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
                     case 'binary':
-                        return BinaryDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                        return BinaryDockerParamEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
                     case 'string':
-                        return StringDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                        return StringDockerParamEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
                     default:
                         throw new Error(`There is no data type "${entry.type}"`);
                 }
