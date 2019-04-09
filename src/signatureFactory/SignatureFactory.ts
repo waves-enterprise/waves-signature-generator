@@ -24,7 +24,12 @@ import {
     PermissionOpType,
     PermissionRole,
     PermissionDueTimestamp,
-    IDOCKERCREATE_PROPS, IDOCKERCALL_PROPS
+    IDOCKERCREATE_PROPS,
+    IDOCKERCALL_PROPS,
+    IDOCKERDISABLE_PROPS,
+    IPOLICY_UPDATE_PROPS,
+    IPOLICY_CREATE_PROPS,
+    IPOLICY_REGISTER_NODE_PROPS
 } from '..';
 import {
     IPERMIT_PROPS,
@@ -356,6 +361,8 @@ const SPONSORSHIP = generate<ISPONSORSHIP_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.SPONSORSHIP] = SPONSORSHIP;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.SPONSORSHIP] = SPONSORSHIP;
 
+// Docker txs
+
 const DOCKER_CREATE = generate<IDOCKERCREATE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
     constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
@@ -384,3 +391,58 @@ const DOCKER_CALL = generate<IDOCKERCALL_PROPS>([
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL] = DOCKER_CALL;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CALL] = DOCKER_CALL;
+
+
+const DOCKER_DISABLE = generate<IDOCKERDISABLE_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.DOCKER_DISABLE,
+    constants.TRANSACTION_TYPE_VERSION.DOCKER_DISABLE,
+    new Base58('senderPublicKey'),
+    new Base58WithLength('contractId'),
+    new Long('fee'),
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_DISABLE] = DOCKER_DISABLE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_DISABLE] = DOCKER_DISABLE;
+
+// Policy txs
+
+const POLICY_REGISTER_NODE = generate<IPOLICY_REGISTER_NODE_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE,
+    constants.TRANSACTION_TYPE_VERSION.POLICY_REGISTER_NODE,
+    new Base58('senderPublicKey'),
+    new StringWithLength('nodeName'),
+    new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
+    new Long('fee'),
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE] = POLICY_REGISTER_NODE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.POLICY_REGISTER_NODE] = POLICY_REGISTER_NODE;
+
+const POLICY_CREATE = generate<IPOLICY_CREATE_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.POLICY_CREATE,
+    constants.TRANSACTION_TYPE_VERSION.POLICY_CREATE,
+    new Base58('senderPublicKey'),
+    new StringWithLength('description'),
+    new StringWithLength('recipients'), // todo
+    new StringWithLength('owners'), // todo
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_CREATE] = POLICY_CREATE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.POLICY_CREATE] = POLICY_CREATE;
+
+const POLICY_UPDATE = generate<IPOLICY_UPDATE_PROPS>([
+    constants.TRANSACTION_TYPE_NUMBER.POLICY_UPDATE,
+    constants.TRANSACTION_TYPE_VERSION.POLICY_UPDATE,
+    new Base58('senderPublicKey'),
+    new StringWithLength('policyId'),
+    new StringWithLength('recipients'), // todo
+    new StringWithLength('owners'), // todo
+    new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
+    new Long('timestamp')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_UPDATE] = POLICY_UPDATE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.POLICY_UPDATE] = POLICY_UPDATE;

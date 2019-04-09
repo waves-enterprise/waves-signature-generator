@@ -49,7 +49,13 @@ export const enum TRANSACTION_TYPE_NUMBER {
     SPONSORSHIP = 14,
     PERMIT = 102,
     DOCKER_CREATE = 103,
-    DOCKER_CALL = 104
+    DOCKER_CALL = 104,
+    DOCKER_DISABLE = 106,
+    POLICY_REGISTER_NODE = 111,
+    POLICY_CREATE = 112,
+    POLICY_UPDATE = 113,
+    POLICY_DATA_HASH = 114 // not exposed
+
 }
 
 export const enum TRANSACTION_TYPE {
@@ -67,7 +73,12 @@ export const enum TRANSACTION_TYPE {
     SPONSORSHIP = 'sponsorship',
     PERMIT = 'permit',
     DOCKER_CREATE = 'dockerCreate',
-    DOCKER_CALL = 'dockerCall'
+    DOCKER_CALL = 'dockerCall',
+    DOCKER_DISABLE = 'dockerDisable',
+    POLICY_REGISTER_NODE = 'policyRegisterNode',
+    POLICY_CREATE = 'policyCreate',
+    POLICY_UPDATE = 'policyUpdate',
+    POLICY_DATA_HASH = 'policyDataHash' // not exposed
 }
 
 export const enum TRANSACTION_TYPE_VERSION {
@@ -85,7 +96,12 @@ export const enum TRANSACTION_TYPE_VERSION {
     SPONSORSHIP = 1,
     PERMIT = 1,
     DOCKER_CREATE = 1,
-    DOCKER_CALL = 1
+    DOCKER_CALL = 1,
+    DOCKER_DISABLE = 1,
+    POLICY_REGISTER_NODE = 1,
+    POLICY_CREATE = 1,
+    POLICY_UPDATE = 1,
+    POLICY_DATA_HASH = 1 // not exposed
 }
 
 export const WAVES_ID = 'WAVES';

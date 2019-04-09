@@ -379,14 +379,6 @@ export class DockerCreateParamsEntries extends ByteProcessor {
         const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length));
         if (entries.length) {
             return Promise.all(entries.map((entry) => {
-                // for docker tx data entries string and binary types have 4 byte length
-                let byteLength;
-                if (entry.type === 'string' || entry.type === 'binary') {
-                    byteLength = 4
-                } else {
-                    byteLength = 2;
-                }
-
                 const prependKeyBytes = (valueBytes) => {
                     return StringWithLength.prototype.process.call(this, entry.key).then((keyBytes) => {
                         return concatUint8Arrays(keyBytes, valueBytes);
@@ -398,6 +390,7 @@ export class DockerCreateParamsEntries extends ByteProcessor {
                         return IntegerDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
                     case 'boolean':
                         return BooleanDataEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
+                    // for docker tx data entries string and binary types have 4 byte length
                     case 'binary':
                         return BinaryDockerParamEntry.prototype.process.call(this, entry.value).then(prependKeyBytes);
                     case 'string':

@@ -127,7 +127,6 @@ export interface IDOCKERCALL_PROPS extends IDEFAULT_PROPS {
 }
 
 export interface IDOCKERCREATE_PROPS extends IDEFAULT_PROPS {
-    /*todo*/
     params: Array<IDATA_ENTRY>;
     fee: string;
     imageHash: string;
@@ -135,6 +134,31 @@ export interface IDOCKERCREATE_PROPS extends IDEFAULT_PROPS {
     contractName: string;
 }
 
+export interface IDOCKERDISABLE_PROPS extends IDEFAULT_PROPS {
+    fee: string;
+    contractId: string;
+}
+
+
+// policy
+
+export interface IPOLICY_REGISTER_NODE_PROPS extends IDEFAULT_PROPS {
+    opType: string;
+    nodeName: string;
+}
+
+export interface IPOLICY_CREATE_PROPS extends IDEFAULT_PROPS {
+    description: string;
+    recipients: string;
+    owners: string;
+}
+
+export interface IPOLICY_UPDATE_PROPS extends IDEFAULT_PROPS {
+    opType: string;
+    policyId: string;
+    recipients: string;
+    owners: string;
+}
 
 export interface IDATA_ENTRY {
     key: string;
@@ -158,6 +182,10 @@ export type TTX_NUMBER_MAP = {
     102: ISignatureGeneratorConstructor<IPERMIT_PROPS>;
     103: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
     104: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
+    106: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
+    111: ISignatureGeneratorConstructor<IPOLICY_REGISTER_NODE_PROPS>;
+    112: ISignatureGeneratorConstructor<IPOLICY_CREATE_PROPS>;
+    113: ISignatureGeneratorConstructor<IPOLICY_UPDATE_PROPS>;
 }
 
 export type TTX_TYPE_MAP = {
@@ -177,4 +205,9 @@ export type TTX_TYPE_MAP = {
 
     dockerCreate: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
     dockerCall: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
+    dockerDisable: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
+
+    policyRegisterNode: ISignatureGeneratorConstructor<IPOLICY_REGISTER_NODE_PROPS>;
+    policyCreate: ISignatureGeneratorConstructor<IPOLICY_CREATE_PROPS>;
+    policyUpdate: ISignatureGeneratorConstructor<IPOLICY_UPDATE_PROPS>;
 }
