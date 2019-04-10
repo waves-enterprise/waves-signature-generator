@@ -149,75 +149,92 @@ describe('Waves signature tests', () => {
                 expect(isSignatureValid).toBe(isSignatureValid);
 
 
-               /* const seed = {
-                    keyPair: {
-                        privateKey: '3hFkg3XwC827R7CzQLbpXQzZpMS98S3Jrv8wYY5LTtn7',
-                        publicKey:
-                            '3RBMLDrd27WAfv84abTZSZTE5ZBsp5JX6dNz3YteQwNz'
-                    }
-                };
+                /* const seed = {
+                     keyPair: {
+                         privateKey: '3hFkg3XwC827R7CzQLbpXQzZpMS98S3Jrv8wYY5LTtn7',
+                         publicKey:
+                             '3RBMLDrd27WAfv84abTZSZTE5ZBsp5JX6dNz3YteQwNz'
+                     }
+                 };
 
 
-                // docker call
-                const dockerCallTX = {
-                    "senderPublicKey": seed.keyPair.publicKey,
-                    "authorPublicKey": seed.keyPair.publicKey,
-                    contractId: '2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu',
-                    "params": [],
-                    "timestamp": Date.now(),
-                    "fee": 500000
-                };
+                 // docker call
+                 const dockerCallTX = {
+                     "senderPublicKey": seed.keyPair.publicKey,
+                     "authorPublicKey": seed.keyPair.publicKey,
+                     contractId: '2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu',
+                     "params": [],
+                     "timestamp": Date.now(),
+                     "fee": 500000
+                 };
 
-                const dcMock = {
-                    "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
-                    "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
-                    "fee": "15000000",
-                    "contractId": "2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu",
-                    "id": "BpzGbk6Mvtofsde3DGVR2Lx7nEUwxWrsfHcvsaY9TZH9",
-                    "type": 104,
-                    "params": [
-                        {
-                            key: "number",
-                            type: "integer",
-                            value: 1
-                        },
-                        {
-                            key: "string",
-                            type: "string",
-                            value: "pizda"
-                        },
-                        {
-                            key: "binary",
-                            type: "binary",
-                            value: "base64:cGl6ZGVub2Noa2E="
-                        },
-                        {
-                            key: "boolean",
-                            type: "boolean",
-                            value: true
-                        }
-                    ],
-                    "version": 1,
-                    "timestamp": 1554293583094
-                };
+                 const dcMock = {
+                     "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                     "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
+                     "fee": "15000000",
+                     "contractId": "2D9vyC5UjBao1yGkjoofBjRPxFyXBYeSy6Y8XUafryxu",
+                     "id": "BpzGbk6Mvtofsde3DGVR2Lx7nEUwxWrsfHcvsaY9TZH9",
+                     "type": 104,
+                     "params": [
+                         {
+                             key: "number",
+                             type: "integer",
+                             value: 1
+                         },
+                         {
+                             key: "string",
+                             type: "string",
+                             value: "pizda"
+                         },
+                         {
+                             key: "binary",
+                             type: "binary",
+                             value: "base64:cGl6ZGVub2Noa2E="
+                         },
+                         {
+                             key: "boolean",
+                             type: "boolean",
+                             value: true
+                         }
+                     ],
+                     "version": 1,
+                     "timestamp": 1554293583094
+                 };
+
+                 const dcMock2 = {
+                     "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                     authorPublicKey: "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                     "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
+                     "fee": "15000000",
+                     "image": "image",
+                     "imageHash": "imageHash",
+                     "contractName": "contractName",
+                     "type": 103,
+                     "version": 1,
+                     "timestamp": 1554293583094,
+                     params: []
+                 };*/
+
 
                 const dcMock2 = {
+                    type: 103,
                     "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
-                    authorPublicKey: "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
-                    "sender": "3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7",
-                    "fee": "15000000",
-                    "image": "image",
-                    "imageHash": "imageHash",
-                    "contractName": "contractName",
-                    "type": 103,
-                    "version": 1,
-                    "timestamp": 1554293583094,
-                    params: []
-                };*/
+                    "authorPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    "timestamp": 1554887021294,
+                    "image": "tdm-actions-execution:latest",
+                    "imageHash": "sha256:a77b9aede9c28ca7bf00bf84cc753c039c27269c6cda6511066739086a156453",
+                    "contractName": "contract_test",
+                    "params": [{"key": "key1", "type": "string", "value": "dsfarfarfar"}, {
+                        "key": "key2",
+                        "type": "integer",
+                        "value": "222"
+                    }, {"key": "key3", "type": "boolean", "value": true},
+                        {"key": "key", "type": "binary", "value": "base64:abcd"}],
+                    "fee": "100000000"
+                };
 
 
-
-                /*const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CREATE](dcMock2);
+               /* const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CREATE](dcMock2);
                 // const bytes2 = await signatureGenerator2.getBytes();
                 // const signature2 = await signatureGenerator2.getSignature(seed.keyPair.privateKey);
                 // console.log('signature2', bytes2);
@@ -225,8 +242,7 @@ describe('Waves signature tests', () => {
                 signatureGenerator2.getBytes().then(bytes => {
                     //    const b = base58.encode(bytes);
                     console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(','))
-                })
-                */
+                })*/
                 // /docker call
 
 

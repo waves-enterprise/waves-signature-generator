@@ -367,7 +367,7 @@ const DOCKER_CREATE = generate<IDOCKERCREATE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
     constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
     new Base58('senderPublicKey'),
-    new Base58('authorPublicKey'),
+    //new Base58('authorPublicKey'),
     new StringWithLength('image'),
     new StringWithLength('imageHash'),
     new StringWithLength('contractName'),
