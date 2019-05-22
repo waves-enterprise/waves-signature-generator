@@ -192,10 +192,10 @@ const PERMIT = generate<IPERMIT_PROPS>([
     new Base58('senderPublicKey'),
     new PermissionTarget('target'),
     new Long('timestamp'),
+    new Long('fee'),
     new PermissionOpType('opType'),
     new PermissionRole('role'),
     new Long('timestamp'),
-    new Long('fee'),
     new PermissionDueTimestamp('dueTimestamp')
 ]);
 
