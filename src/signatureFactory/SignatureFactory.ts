@@ -191,11 +191,11 @@ const PERMIT = generate<IPERMIT_PROPS>([
     constants.TRANSACTION_TYPE_VERSION.PERMIT,
     new Base58('senderPublicKey'),
     new PermissionTarget('target'),
-    // new Long('fee'), // there is no fee on permission txs signature. set it to 0, ask K Nebogin for further info
     new Long('timestamp'),
     new PermissionOpType('opType'),
     new PermissionRole('role'),
     new Long('timestamp'),
+    new Long('fee'),
     new PermissionDueTimestamp('dueTimestamp')
 ]);
 
