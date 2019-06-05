@@ -411,9 +411,10 @@ const POLICY_REGISTER_NODE = generate<IPOLICY_REGISTER_NODE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE,
     constants.TRANSACTION_TYPE_VERSION.POLICY_REGISTER_NODE,
     new Base58('senderPublicKey'),
+    new Base58('target'),
     new StringWithLength('nodeName'),
     new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
-    new Long('fee'),
+    // new Long('fee'),
     new Long('timestamp')
 ]);
 

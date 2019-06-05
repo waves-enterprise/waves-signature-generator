@@ -245,11 +245,19 @@ describe('Waves signature tests', () => {
                 })*/
                 // /docker call
 
+                /*const reg = {
+                    type: 111,
+                    "senderPublicKey": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    "target": "7Qi7EuGU74GrnCuoSuEETNyGJFNnxNwLUTPurejcUWod",
+                    "timestamp": 1554887021294,
+                    "nodeName": "shit",
+                    "opType": "add",
+                };
 
-                /* const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE](issueWithScript);
-                 // const b = await s.getBytes();
-                 // console.log(b);
-                 // console.log(base58.encode(b))
+                 const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE](reg);
+                 const b = await s.getBytes();
+                 console.log(b);
+                 console.log(base58.encode(b));
 
                  s.getBytes().then(bytes => {
 
