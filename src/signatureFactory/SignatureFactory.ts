@@ -414,8 +414,8 @@ const POLICY_REGISTER_NODE = generate<IPOLICY_REGISTER_NODE_PROPS>([
     new Base58('target'),
     new StringWithLength('nodeName'),
     new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
-    // new Long('fee'),
-    new Long('timestamp')
+    new Long('timestamp'),
+    new Long('fee'),
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE] = POLICY_REGISTER_NODE;
