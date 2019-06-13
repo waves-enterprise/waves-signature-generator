@@ -410,9 +410,17 @@ export class DockerCreateParamsEntries extends ByteProcessor {
 }
 
 export class ArrayOfStringsWithLength extends ByteProcessor {
-    public process(values: string[], byteLength: number = 2) {
-        const value = values.reduce((acc, e) => acc + e, '');
-        const bytesWithLength = convert.stringToByteArrayWithSize(value, byteLength);
-        return Promise.resolve(Uint8Array.from(bytesWithLength));
+    public process(values) {
+        const recipientProcessor = new Recipient(STUB_NAME);
+        const promises = [];
+        for (let i = 0; i < values.length; i++) {
+            promises.push(recipientProcessor.process(values[i]));
+        }
+
+        return Promise.all(promises).then((elements) => {
+            const length = convert.IntToByteArray(values.length);
+            const lengthBytes = Uint8Array.from(length);
+            return concatUint8Arrays(lengthBytes, ...elements);
+        });
     }
 }

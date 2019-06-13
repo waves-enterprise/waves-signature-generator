@@ -4,6 +4,42 @@ import cryptoGost from '../src/utils/cryptoGost'
 import crypto from '../src/utils/crypto'
 import base58 from '../src/libs/base58'
 
+
+import {
+    Alias,
+    AssetId,
+    Attachment,
+    Base58,
+    Base58WithLength,
+    Base64,
+    Bool,
+    Byte,
+    ByteProcessor,
+    DataEntries,
+    DockerCreateParamsEntries,
+    IDATA_PROPS,
+    IMASS_TRANSFER_PROPS,
+    ISET_SCRIPT_PROPS,
+    ISPONSORSHIP_PROPS,
+    Long,
+    MandatoryAssetId,
+    OrderType,
+    Recipient,
+    StringWithLength,
+    ArrayOfStringsWithLength,
+    Transfers,
+    PermissionTarget,
+    PermissionOpType,
+    PermissionRole,
+    PermissionDueTimestamp,
+    IDOCKERCREATE_PROPS,
+    IDOCKERCALL_PROPS,
+    IDOCKERDISABLE_PROPS,
+    IPOLICY_UPDATE_PROPS,
+    IPOLICY_CREATE_PROPS,
+    IPOLICY_REGISTER_NODE_PROPS
+} from '../src/';
+
 const MAINNET_GOST = {
     PHRASE: 'wreck author problem inch innocent surround raise code immune wink scare joke tank dragon teach',
     ADDRESS: '3FSFdLAeuKyU1LtqcjPyTZtdxpxcKqMrE2j',
@@ -234,15 +270,15 @@ describe('Waves signature tests', () => {
                 };
 
 
-               /* const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CREATE](dcMock2);
-                // const bytes2 = await signatureGenerator2.getBytes();
-                // const signature2 = await signatureGenerator2.getSignature(seed.keyPair.privateKey);
-                // console.log('signature2', bytes2);
+                /* const signatureGenerator2 = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DOCKER_CREATE](dcMock2);
+                 // const bytes2 = await signatureGenerator2.getBytes();
+                 // const signature2 = await signatureGenerator2.getSignature(seed.keyPair.privateKey);
+                 // console.log('signature2', bytes2);
 
-                signatureGenerator2.getBytes().then(bytes => {
-                    //    const b = base58.encode(bytes);
-                    console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(','))
-                })*/
+                 signatureGenerator2.getBytes().then(bytes => {
+                     //    const b = base58.encode(bytes);
+                     console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(','))
+                 })*/
                 // /docker call
 
                 /*const reg = {
@@ -264,6 +300,42 @@ describe('Waves signature tests', () => {
                      const b = base58.encode(bytes);
                      console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(', '))
                  });*/
+
+                /*const reg3 = {
+                    "senderPublicKey": "faf2Rwo9WUoiVchf7dSahT33pS7TZLETRWrRw39Asti",
+                    "sender": "3N8WVBp1QTGsU1qKfgdptpj55CRJk5qLuW4",
+                    "policyName": "Oscar policy",
+                    "proofs": ["2WXHAQp9eR8BcwgDCAwMC5uSHALqABVPsRMayjnn6SYErxiPp1SBotpEfNEzxFKebn7bQCJkRZEAJ1gedm1sPUhmGBB"],
+                    "recipients": ["3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7"],
+                    "fee": 100000000,
+                    "description": "Policy description!",
+                    "owners": ["3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7"],
+                    "id": "25BTLqYhHcySzdv7skLmzqc2JnssjVQQiXeuDbQ233EJ",
+                    "type": 112,
+                    "timestamp": 1560433576046
+                };
+
+                const s = new TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.POLICY_CREATE](reg3);
+                const b = await s.getBytes();
+                console.log(b);
+
+                s.getBytes().then(bytes => {
+
+                    const b = base58.encode(bytes);
+                    console.log(Array.from(bytes).map(e => e > 127 ? ((256 - e) * -1) : e).join(', '))
+                });
+
+                toBytes('policyName', new StringWithLength('policyName').process('Oscar policy'));
+                toBytes('description', new StringWithLength('description').process('Policy description!'));
+
+                toBytes('owners', new ArrayOfStringsWithLength('owners').process(['3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7']));
+                toBytes('recipients', new ArrayOfStringsWithLength('recipients').process(['3N6J8YZ4VGMrcX9fHRoJutfGPmiWziMd8z7']));
+
+                async function toBytes(title, promise) {
+                    const bytes = await promise;
+                    const arr: number[] = Array.from(bytes);
+                    const result = arr.map(e => e > 127 ? ((256 - e) * -1) : e).join(', ')
+                }*/
             });
         });
     });

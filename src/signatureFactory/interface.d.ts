@@ -149,15 +149,16 @@ export interface IPOLICY_REGISTER_NODE_PROPS extends IDEFAULT_PROPS {
 
 export interface IPOLICY_CREATE_PROPS extends IDEFAULT_PROPS {
     description: string;
-    recipients: string;
-    owners: string;
+    policyName: string;
+    recipients: string[];
+    owners: string[];
 }
 
 export interface IPOLICY_UPDATE_PROPS extends IDEFAULT_PROPS {
     opType: string;
     policyId: string;
-    recipients: string;
-    owners: string;
+    recipients: string[];
+    owners: string[];
 }
 
 export interface IDATA_ENTRY {
