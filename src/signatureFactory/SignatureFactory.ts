@@ -19,6 +19,7 @@ import {
     OrderType,
     Recipient,
     StringWithLength,
+    ArrayOfStringsWithLength,
     Transfers,
     PermissionTarget,
     PermissionOpType,
@@ -411,9 +412,9 @@ const POLICY_REGISTER_NODE = generate<IPOLICY_REGISTER_NODE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE,
     constants.TRANSACTION_TYPE_VERSION.POLICY_REGISTER_NODE,
     new Base58('senderPublicKey'),
-    new Base58('target'),
+    new Base58('targetPubKey'),
     new StringWithLength('nodeName'),
-    new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
+    new PermissionOpType('opType'),
     new Long('timestamp'),
     new Long('fee'),
 ]);
@@ -421,14 +422,27 @@ const POLICY_REGISTER_NODE = generate<IPOLICY_REGISTER_NODE_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_REGISTER_NODE] = POLICY_REGISTER_NODE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.POLICY_REGISTER_NODE] = POLICY_REGISTER_NODE;
 
+
+/**
+ * recipients and owners serialization for policy create nd policy update txs
+ *
+ * def serializeAddresses(addresses: List[Address]): Array[Byte] = {
+    val sizeArray = Ints.toByteArray(addresses.size)
+    val dataArray = addresses.map(_.bytes.arr).fold(Array.empty[Byte]) { case (res, next) => Bytes.concat(res, next) }
+    Bytes.concat(sizeArray, dataArray)
+  }
+ */
+
 const POLICY_CREATE = generate<IPOLICY_CREATE_PROPS>([
     constants.TRANSACTION_TYPE_NUMBER.POLICY_CREATE,
     constants.TRANSACTION_TYPE_VERSION.POLICY_CREATE,
     new Base58('senderPublicKey'),
+    new StringWithLength('policyName'),
     new StringWithLength('description'),
-    new StringWithLength('recipients'), // todo
-    new StringWithLength('owners'), // todo
-    new Long('timestamp')
+    new ArrayOfStringsWithLength('recipients'), // todo
+    new ArrayOfStringsWithLength('owners'), // todo
+    new Long('timestamp'),
+    new Long('fee'),
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_CREATE] = POLICY_CREATE;
@@ -439,10 +453,11 @@ const POLICY_UPDATE = generate<IPOLICY_UPDATE_PROPS>([
     constants.TRANSACTION_TYPE_VERSION.POLICY_UPDATE,
     new Base58('senderPublicKey'),
     new StringWithLength('policyId'),
-    new StringWithLength('recipients'), // todo
-    new StringWithLength('owners'), // todo
-    new PermissionOpType('opType'), // todo - rename. currently permission and policy have same op types
-    new Long('timestamp')
+    new ArrayOfStringsWithLength('recipients'), // todo
+    new ArrayOfStringsWithLength('owners'), // todo
+    new PermissionOpType('opType'),
+    new Long('timestamp'),
+    new Long('fee'),
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.POLICY_UPDATE] = POLICY_UPDATE;

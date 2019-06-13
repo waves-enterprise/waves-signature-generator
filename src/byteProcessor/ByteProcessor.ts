@@ -408,3 +408,11 @@ export class DockerCreateParamsEntries extends ByteProcessor {
         }
     }
 }
+
+export class ArrayOfStringsWithLength extends ByteProcessor {
+    public process(values: string[], byteLength: number = 2) {
+        const value = values.reduce((acc, e) => acc + e, '');
+        const bytesWithLength = convert.stringToByteArrayWithSize(value, byteLength);
+        return Promise.resolve(Uint8Array.from(bytesWithLength));
+    }
+}
