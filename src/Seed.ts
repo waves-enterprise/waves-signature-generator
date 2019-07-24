@@ -43,7 +43,8 @@ export class Seed {
             throw new Error('The seed phrase you are trying to encrypt is too short');
         }
 
-        return isGost ? utils.cryptoGost.encryptSeed(seedPhrase, password, address) : utils.crypto.encryptSeed(seedPhrase, password);
+        // return isGost ? utils.cryptoGost.encryptSeed(seedPhrase, password, address) : utils.crypto.encryptSeed(seedPhrase, password);
+        return utils.crypto.encryptSeed(seedPhrase, password);
     }
 
     public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, address: string): string {
@@ -53,7 +54,8 @@ export class Seed {
         let phrase;
 
         try {
-            phrase = config.isCryptoGost() ? utils.cryptoGost.decryptSeed(encryptedSeedPhrase, password, address) : utils.crypto.decryptSeed(encryptedSeedPhrase, password);
+            // phrase = config.isCryptoGost() ? utils.cryptoGost.decryptSeed(encryptedSeedPhrase, password, address) : utils.crypto.decryptSeed(encryptedSeedPhrase, password);
+            phrase = utils.crypto.decryptSeed(encryptedSeedPhrase, password);
         } catch (e) {
             throw new Error(wrongPasswordMessage);
         }
