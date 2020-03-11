@@ -134,6 +134,10 @@ export interface IDOCKERCREATE_PROPS extends IDEFAULT_PROPS {
     contractName: string;
 }
 
+export interface IDOCKERCREATE_V2_PROPS extends IDOCKERCREATE_PROPS {
+    feeAssetId: string;
+}
+
 export interface IDOCKERDISABLE_PROPS extends IDEFAULT_PROPS {
     fee: string;
     contractId: string;

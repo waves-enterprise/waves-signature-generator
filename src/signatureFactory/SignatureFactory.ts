@@ -30,7 +30,8 @@ import {
   IDOCKERDISABLE_PROPS,
   IPOLICY_UPDATE_PROPS,
   IPOLICY_CREATE_PROPS,
-  IPOLICY_REGISTER_NODE_PROPS
+  IPOLICY_REGISTER_NODE_PROPS,
+  IDOCKERCREATE_V2_PROPS
 } from '..'
 import {
   IPERMIT_PROPS,
@@ -368,17 +369,32 @@ const DOCKER_CREATE = generate<IDOCKERCREATE_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
   constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE,
   new Base58('senderPublicKey'),
-  //new Base58('authorPublicKey'),
   new StringWithLength('image'),
   new StringWithLength('imageHash'),
   new StringWithLength('contractName'),
   new DockerCreateParamsEntries('params'),
   new Long('fee'),
   new Long('timestamp')
-])
+]);
 
-TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE] = DOCKER_CREATE
-TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE] = DOCKER_CREATE
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE] = DOCKER_CREATE;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE] = DOCKER_CREATE;
+
+const DOCKER_CREATE_V2 = generate<IDOCKERCREATE_V2_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE,
+  constants.TRANSACTION_TYPE_VERSION.DOCKER_CREATE_V2,
+  new Base58('senderPublicKey'),
+  new StringWithLength('image'),
+  new StringWithLength('imageHash'),
+  new StringWithLength('contractName'),
+  new DockerCreateParamsEntries('params'),
+  new Long('fee'),
+  new Long('timestamp'),
+  new AssetId('feeAssetId')
+]);
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CREATE_V2] = DOCKER_CREATE_V2;
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CREATE_V2] = DOCKER_CREATE_V2;
 
 const DOCKER_CALL = generate<IDOCKERCALL_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL,
