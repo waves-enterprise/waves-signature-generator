@@ -209,6 +209,7 @@ export type TTX_TYPE_MAP = {
     permit: ISignatureGeneratorConstructor<IPERMIT_PROPS>;
 
     dockerCreate: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
+    dockerCreateV2: ISignatureGeneratorConstructor<IDOCKERCREATE_V2_PROPS>;
     dockerCall: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
     dockerDisable: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
 
