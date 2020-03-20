@@ -1,10 +1,9 @@
 {
   "name": "@vostokplatform/signature-generator",
-  "version": "1.6.7-RC2",
+  "version": "1.6.7-RC3",
   "main": "dist/index.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "types": "dist/index.d.ts",
   "dependencies": {

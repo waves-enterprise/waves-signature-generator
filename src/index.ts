@@ -20,6 +20,8 @@ import { concatUint8Arrays } from './utils/concat';
 import convert from './utils/convert';
 import crypto from './utils/crypto';
 import cryptoGost from './utils/cryptoGost';
+import { BigNumber } from 'bignumber.js';
+import { TBuffer, IKeyPairBytes } from './interface';
 
 export const libs = {
     base64,
