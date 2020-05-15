@@ -27,6 +27,7 @@ import {
   PermissionDueTimestamp,
   IDOCKERCREATE_PROPS,
   IDOCKERCALL_PROPS,
+  IDOCKERCALL_V2_PROPS,
   IDOCKERDISABLE_PROPS,
   IPOLICY_UPDATE_PROPS,
   IPOLICY_CREATE_PROPS,
@@ -408,6 +409,21 @@ const DOCKER_CALL = generate<IDOCKERCALL_PROPS>([
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL] = DOCKER_CALL
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CALL] = DOCKER_CALL
+
+const DOCKER_CALL_V2 = generate<IDOCKERCALL_V2_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL_V2,
+  constants.TRANSACTION_TYPE_VERSION.DOCKER_CALL_V2,
+  new Base58('senderPublicKey'),
+  new Base58WithLength('contractId'),
+  new Long('contractVersion'),
+  new DockerCreateParamsEntries('params'),
+  new Long('fee'),
+  new Long('timestamp'),
+  new AssetId('feeAssetId')
+])
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL_V2] = DOCKER_CALL_V2
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.DOCKER_CALL_V2] = DOCKER_CALL_V2
 
 const DOCKER_DISABLE = generate<IDOCKERDISABLE_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.DOCKER_DISABLE,
