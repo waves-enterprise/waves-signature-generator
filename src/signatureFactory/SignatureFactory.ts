@@ -416,11 +416,11 @@ const DOCKER_CALL_V2 = generate<IDOCKERCALL_V2_PROPS>([
   constants.TRANSACTION_TYPE_VERSION.DOCKER_CALL_V2,
   new Base58('senderPublicKey'),
   new Base58WithLength('contractId'),
-  new Short('contractVersion'),
   new DockerCreateParamsEntries('params'),
   new Long('fee'),
   new Long('timestamp'),
-  new AssetId('feeAssetId')
+  new Short('contractVersion'),
+  new AssetId('feeAssetId'),
 ])
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.DOCKER_CALL_V2] = DOCKER_CALL_V2
