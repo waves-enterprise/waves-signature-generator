@@ -15,7 +15,7 @@ import {
   ISET_SCRIPT_PROPS,
   ISPONSORSHIP_PROPS,
   Long,
-  Short,
+  Integer,
   MandatoryAssetId,
   OrderType,
   Recipient,
@@ -419,7 +419,7 @@ const DOCKER_CALL_V2 = generate<IDOCKERCALL_V2_PROPS>([
   new DockerCreateParamsEntries('params'),
   new Long('fee'),
   new Long('timestamp'),
-  new Short('contractVersion'),
+  new Integer('contractVersion'),
   new AssetId('feeAssetId'),
 ])
 
