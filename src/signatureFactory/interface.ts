@@ -127,7 +127,6 @@ export interface IDOCKERCALL_PROPS extends IDEFAULT_PROPS {
 }
 
 export interface IDOCKERCALL_V2_PROPS extends IDOCKERCALL_PROPS {
-    feeAssetId: string;
     contractVersion: number;
 }
 
