@@ -110,8 +110,16 @@ export class Long extends ByteProcessor {
 export class Short extends ByteProcessor {
   public process (value: number) {
     if (typeof value !== 'number') throw new Error('You should pass a number to Short constructor')
-    if (value < 0 || value > 65535) throw new Error('Short value must fit between 0 and 65535')
+    if (value < -2147483648 || value > 2147483647) throw new Error('Short value must fit between -2147483648 and 2147483647')
     return Promise.resolve(Uint8Array.from(convert.shortToByteArray(value)))
+  }
+}
+
+export class Integer extends ByteProcessor {
+  public process (value: number) {
+    if (typeof value !== 'number') throw new Error('You should pass a number to Integer constructor')
+    if (value < 0 || value > 65535) throw new Error('Short value must fit between 0 and 65535')
+    return Promise.resolve(Uint8Array.from(convert.IntToByteArray(value)))
   }
 }
 
