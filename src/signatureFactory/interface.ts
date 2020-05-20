@@ -129,6 +129,9 @@ export interface IDOCKERCALL_PROPS extends IDEFAULT_PROPS {
 export interface IDOCKERCALL_V2_PROPS extends IDOCKERCALL_PROPS {
     contractVersion: number;
 }
+export interface IDOCKERCALL_V3_PROPS extends IDOCKERCALL_V2_PROPS {
+    feeAssetId: string;
+}
 
 export interface IDOCKERCREATE_PROPS extends IDEFAULT_PROPS {
     params: Array<IDATA_ENTRY>;
@@ -216,6 +219,7 @@ export type TTX_TYPE_MAP = {
     dockerCreateV2: ISignatureGeneratorConstructor<IDOCKERCREATE_V2_PROPS>;
     dockerCall: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
     dockerCallV2: ISignatureGeneratorConstructor<IDOCKERCALL_V2_PROPS>;
+    dockerCallV3: ISignatureGeneratorConstructor<IDOCKERCALL_V3_PROPS>;
     dockerDisable: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
 
     policyRegisterNode: ISignatureGeneratorConstructor<IPOLICY_REGISTER_NODE_PROPS>;
