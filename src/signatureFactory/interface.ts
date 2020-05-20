@@ -150,6 +150,14 @@ export interface IDOCKERDISABLE_PROPS extends IDEFAULT_PROPS {
     contractId: string;
 }
 
+export interface IDOCKERUPDATE_V2_PROPS extends IDEFAULT_PROPS {
+    contractId: string;
+    image: string;
+    imageHash: string;
+    fee: string;
+    feeAssetId: string;
+}
+
 
 // policy
 
@@ -195,6 +203,7 @@ export type TTX_NUMBER_MAP = {
     103: ISignatureGeneratorConstructor<IDOCKERCREATE_PROPS>;
     104: ISignatureGeneratorConstructor<IDOCKERCALL_PROPS>;
     106: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
+    107: ISignatureGeneratorConstructor<IDOCKERUPDATE_V2_PROPS>
     111: ISignatureGeneratorConstructor<IPOLICY_REGISTER_NODE_PROPS>;
     112: ISignatureGeneratorConstructor<IPOLICY_CREATE_PROPS>;
     113: ISignatureGeneratorConstructor<IPOLICY_UPDATE_PROPS>;
@@ -221,6 +230,7 @@ export type TTX_TYPE_MAP = {
     dockerCallV2: ISignatureGeneratorConstructor<IDOCKERCALL_V2_PROPS>;
     dockerCallV3: ISignatureGeneratorConstructor<IDOCKERCALL_V3_PROPS>;
     dockerDisable: ISignatureGeneratorConstructor<IDOCKERDISABLE_PROPS>;
+    dockerUpdateV2: ISignatureGeneratorConstructor<IDOCKERUPDATE_V2_PROPS>;
 
     policyRegisterNode: ISignatureGeneratorConstructor<IPOLICY_REGISTER_NODE_PROPS>;
     policyCreate: ISignatureGeneratorConstructor<IPOLICY_CREATE_PROPS>;
