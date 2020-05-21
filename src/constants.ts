@@ -82,7 +82,7 @@ export const enum TRANSACTION_TYPE {
     DOCKER_CALL_V2 = 'dockerCallV2',
     DOCKER_CALL_V3 = 'dockerCallV3',
     DOCKER_DISABLE = 'dockerDisable',
-    DOCKER_UPDATE_V2 = 'dockerUpdate',
+    DOCKER_UPDATE_V2 = 'dockerUpdateV2',
     POLICY_REGISTER_NODE = 'policyRegisterNode',
     POLICY_CREATE = 'policyCreate',
     POLICY_UPDATE = 'policyUpdate',
