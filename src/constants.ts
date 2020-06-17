@@ -36,6 +36,7 @@ export const PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE = {
 export const enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
     ISSUE = 3,
+    ISSUE_NO_SCRIPT = 3,
     TRANSFER = 4,
     REISSUE = 5,
     BURN = 6,
@@ -64,6 +65,7 @@ export const enum TRANSACTION_TYPE_NUMBER {
 
 export const enum TRANSACTION_TYPE {
     ISSUE = 'issue',
+    ISSUE_NO_SCRIPT = 'issue_no_script',
     TRANSFER = 'transfer',
     REISSUE = 'reissue',
     BURN = 'burn',
@@ -91,6 +93,7 @@ export const enum TRANSACTION_TYPE {
 
 export const enum TRANSACTION_TYPE_VERSION {
     ISSUE = 2,
+    ISSUE_NO_SCRIPT = 3,
     TRANSFER = 2,
     REISSUE = 2,
     BURN = 2,
