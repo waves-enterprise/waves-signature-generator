@@ -211,6 +211,7 @@ export type TTX_NUMBER_MAP = {
 
 export type TTX_TYPE_MAP = {
     issue: ISignatureGeneratorConstructor<IISSUE_PROPS>;
+    issue_no_script: ISignatureGeneratorConstructor<IISSUE_PROPS>;
     transfer: ISignatureGeneratorConstructor<ITRANSFER_PROPS>;
     reissue: ISignatureGeneratorConstructor<IREISSUE_PROPS>;
     burn: ISignatureGeneratorConstructor<IBURN_PROPS>;

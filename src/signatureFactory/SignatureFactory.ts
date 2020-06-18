@@ -227,6 +227,24 @@ const ISSUE = generate<IISSUE_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.ISSUE] = ISSUE
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.ISSUE] = ISSUE
 
+const ISSUE_NO_SCRIPT = generate<IISSUE_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.ISSUE,
+  constants.TRANSACTION_TYPE_VERSION.ISSUE,
+  new Byte('chainId'),
+  new Base58('senderPublicKey'),
+  new StringWithLength('name'),
+  new StringWithLength('description'),
+  new Long('quantity'),
+  new Byte('precision'),
+  new Bool('reissuable'),
+  new Long('fee'),
+  new Long('timestamp'),
+  0, // 1 - if script exists, and 0 if there's no script
+])
+
+TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.ISSUE_NO_SCRIPT] = ISSUE_NO_SCRIPT
+TX_TYPE_MAP[constants.TRANSACTION_TYPE.ISSUE_NO_SCRIPT] = ISSUE_NO_SCRIPT
+
 const TRANSFER = generate<ITRANSFER_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.TRANSFER,
   constants.TRANSACTION_TYPE_VERSION.TRANSFER,
