@@ -1,5 +1,5 @@
 import { MAINNET_BYTE, TESTNET_BYTE, Seed, config, TRANSACTION_TYPE_NUMBER } from '../src/index'
-import { TX_NUMBER_MAP } from '../src/signatureFactory/SignatureFactory'
+import { TX_NUMBER_MAP } from '../src/transactionsFactory/SignatureFactory'
 import cryptoGost from '../src/utils/cryptoGost'
 import crypto from '../src/utils/crypto'
 import base58 from '../src/libs/base58'

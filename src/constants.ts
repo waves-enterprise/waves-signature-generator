@@ -33,92 +33,6 @@ export const PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE = {
     REMOVE: PERMISSION_TRANSACTION_OPERATION_TYPE_REMOVE_BYTE
 };
 
-export const enum TRANSACTION_TYPE_NUMBER {
-    SEND_OLD = 2,
-    ISSUE = 3,
-    ISSUE_NO_SCRIPT = 3,
-    TRANSFER = 4,
-    REISSUE = 5,
-    BURN = 6,
-    EXCHANGE = 7,
-    LEASE = 8,
-    CANCEL_LEASING = 9,
-    CREATE_ALIAS = 10,
-    MASS_TRANSFER = 11,
-    DATA = 12,
-    SET_SCRIPT = 13,
-    SPONSORSHIP = 14,
-    PERMIT = 102,
-    DOCKER_CREATE = 103,
-    DOCKER_CREATE_V2 = 103,
-    DOCKER_CALL = 104,
-    DOCKER_CALL_V2 = 104,
-    DOCKER_CALL_V3 = 104,
-    DOCKER_DISABLE = 106,
-    DOCKER_UPDATE_V2 = 107,
-    POLICY_REGISTER_NODE = 111,
-    POLICY_CREATE = 112,
-    POLICY_UPDATE = 113,
-    POLICY_DATA_HASH = 114 // not exposed
-
-}
-
-export const enum TRANSACTION_TYPE {
-    ISSUE = 'issue',
-    ISSUE_NO_SCRIPT = 'issue_no_script',
-    TRANSFER = 'transfer',
-    REISSUE = 'reissue',
-    BURN = 'burn',
-    EXCHANGE = 'exchange',
-    LEASE = 'lease',
-    CANCEL_LEASING = 'cancelLeasing',
-    CREATE_ALIAS = 'createAlias',
-    MASS_TRANSFER = 'massTransfer',
-    DATA = 'data',
-    SET_SCRIPT = 'setScript',
-    SPONSORSHIP = 'sponsorship',
-    PERMIT = 'permit',
-    DOCKER_CREATE = 'dockerCreate',
-    DOCKER_CREATE_V2 = 'dockerCreateV2',
-    DOCKER_CALL = 'dockerCall',
-    DOCKER_CALL_V2 = 'dockerCallV2',
-    DOCKER_CALL_V3 = 'dockerCallV3',
-    DOCKER_DISABLE = 'dockerDisable',
-    DOCKER_UPDATE_V2 = 'dockerUpdateV2',
-    POLICY_REGISTER_NODE = 'policyRegisterNode',
-    POLICY_CREATE = 'policyCreate',
-    POLICY_UPDATE = 'policyUpdate',
-    POLICY_DATA_HASH = 'policyDataHash' // not exposed
-}
-
-export const enum TRANSACTION_TYPE_VERSION {
-    ISSUE = 2,
-    ISSUE_NO_SCRIPT = 3,
-    TRANSFER = 2,
-    REISSUE = 2,
-    BURN = 2,
-    EXCHANGE = 2,
-    LEASE = 2,
-    CANCEL_LEASING = 2,
-    CREATE_ALIAS = 2,
-    MASS_TRANSFER = 1,
-    DATA = 1,
-    SET_SCRIPT = 1,
-    SPONSORSHIP = 1,
-    PERMIT = 1,
-    DOCKER_CREATE = 1,
-    DOCKER_CREATE_V2 = 2,
-    DOCKER_CALL = 1,
-    DOCKER_CALL_V2 = 2,
-    DOCKER_CALL_V3 = 3,
-    DOCKER_DISABLE = 1,
-    DOCKER_UPDATE_V2 = 2,
-    POLICY_REGISTER_NODE = 1,
-    POLICY_CREATE = 1,
-    POLICY_UPDATE = 1,
-    POLICY_DATA_HASH = 1 // not exposed
-}
-
 export const WAVES_ID = 'WAVES';
 export const WAVES_BLOCKCHAIN_ID = '';
 
@@ -147,6 +61,3 @@ export const PRIVATE_KEY_LENGTH: number = 32;
 
 export const PUBLIC_KEY_LENGTH: number = 32;
 export const PUBLIC_KEY_GOST_LENGTH: number = 64;
-
-// That is to mark ByteProcessor instances which cannot be affected by user
-export const STUB_NAME = 'reservedName';
