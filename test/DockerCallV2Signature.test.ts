@@ -1,4 +1,5 @@
-import { config, TRANSACTION_TYPE, TX_TYPE_MAP } from "../src";
+import { TRANSACTIONS } from "../src/transactionsFactory/Transactions";
+import { config } from "../src";
 import crypto from "../src/utils/crypto";
 import * as moment from "moment";
 
@@ -68,7 +69,7 @@ describe('', () => {
       params: [],
       fee: '10000000'
     };
-    const signatureGenerator = new TX_TYPE_MAP[TRANSACTION_TYPE.DOCKER_CALL_V2](dockerCallMock);
+    const signatureGenerator = TRANSACTIONS.TRANSFER.V2(dockerCallMock);
     const bytes = await signatureGenerator.getBytes();
     const bytes2 = Int8Array.from(bytes)
     console.log(JSON.stringify(Array.from(bytes2)));

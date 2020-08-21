@@ -1,4 +1,4 @@
-import {MAINNET_BYTE, TESTNET_BYTE, Seed, config} from '../src/index';
+import {MAINNET_BYTE, TESTNET_BYTE, Seed, config} from '../src';
 // import {TX_NUMBER_MAP} from '../src/signatureFactory/SignatureFactory'
 
 const MAINNET = {

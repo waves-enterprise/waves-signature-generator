@@ -17,8 +17,9 @@
     "postpublish": "git push",
     "prepare": "npm run build",
     "test": "npm run compile-test && jest --config jest.config.json",
+    "integrated": "node_modules/.bin/mocha -r ts-node/register test/integrated/*.test.ts",
     "compile": "tsc -p ./",
-    "compile-test": "tsc -p ./test",
+    "compile-test": "tsc -p ./test/integrated",
     "prepublish": "npm run test",
     "uglify": "npm run uglify-full && npm run uglify-partial",
     "uglify-full": "node_modules/.bin/uglifyjs dist/signature-generator.js -o dist/signature-generator.min.js",
@@ -35,7 +36,9 @@
     "babel-jest": "^25.1.0",
     "browserify": "^16.2.2",
     "jest": "25.1.0",
+    "mocha": "^8.1.1",
     "moment": "^2.24.0",
+    "ts-node": "^8.10.2",
     "typescript": "^3.8.3",
     "uglify-js": "^3.4.7"
   }

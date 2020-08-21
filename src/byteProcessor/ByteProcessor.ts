@@ -31,9 +31,11 @@ function getAliasBytes (alias: string): number[] {
 export abstract class ByteProcessor<T> {
   protected constructor(public required: boolean) {}
   public abstract getBytes(val: T) : Promise<Uint8Array>
-  abstract getValidationError(val: T) : string | null
+  public getValidationError(val: T) {
+    return null
+  }
   public getError(val: T): string | null {
-    if (this.required && !val) {
+    if (this.required && typeof val === 'undefined') {
       return 'field is required'
     }
     return this.getValidationError(val)
@@ -49,9 +51,6 @@ export class TxType<T extends TRANSACTION_TYPES> extends ByteProcessor<TRANSACTI
   constructor(required: boolean, public type: T) {
     super(required);
   }
-  getValidationError(val: TRANSACTION_TYPES) {
-    return null
-  }
   getBytes(val: TRANSACTION_TYPES) {
     return Promise.resolve(Uint8Array.from([this.type]))
   }
@@ -60,9 +59,6 @@ export class TxType<T extends TRANSACTION_TYPES> extends ByteProcessor<TRANSACTI
 export class TxVersion<T extends TRANSACTION_VERSIONS> extends ByteProcessor<TRANSACTION_VERSIONS> {
   constructor(required: boolean, public version: T) {
     super(required);
-  }
-  getValidationError(val: TRANSACTION_VERSIONS) {
-    return null
   }
   getBytes(val: TRANSACTION_VERSIONS) {
     return Promise.resolve(Uint8Array.from([this.version]))
@@ -75,9 +71,6 @@ export class Base58 extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   public getBytes (value: string) {
     const bytes = base58.decode(value)
     return Promise.resolve(bytes)
@@ -87,9 +80,6 @@ export class Base58 extends ByteProcessor<string> {
 export class Base58WithLength extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: string) {
-    return null
   }
   getBytes (value: string) {
     const bytes = Array.from(base58.decode(value))
@@ -107,11 +97,11 @@ export class Base64 extends ByteProcessor<string> {
     super(required);
   }
   getValidationError(val: string) {
+    if (typeof val !== 'string') return 'You should pass a string to BinaryDataEntry constructor'
+    if (val.slice(0, 7) !== 'base64:') return 'Blob should be encoded in base64 and prefixed with "base64:"'
     return null
   }
   getBytes (value: string, byteLength: number = 2) {
-    if (typeof value !== 'string') throw new Error('You should pass a string to BinaryDataEntry constructor')
-    if (value.slice(0, 7) !== 'base64:') throw new Error('Blob should be encoded in base64 and prefixed with "base64:"')
     const b64 = value.slice(7) // Getting the string payload
     const bytes = Uint8Array.from(toByteArray(b64))
 
@@ -130,9 +120,6 @@ export class Bool extends ByteProcessor<boolean> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: boolean) {
-    return null
-  }
   getBytes (value: boolean) {
     const bytes = convert.booleanToBytes(value)
     return Promise.resolve(Uint8Array.from(bytes))
@@ -144,11 +131,11 @@ export class Byte extends ByteProcessor<number> {
     super(required);
   }
   getValidationError(val: number) {
+    if (typeof val !== 'number') return 'You should pass a number to Byte constructor'
+    if (val < 0 || val > 255) return 'Byte value must fit between 0 and 255'
     return null
   }
   getBytes (value: number) {
-    if (typeof value !== 'number') throw new Error('You should pass a number to Byte constructor')
-    if (value < 0 || value > 255) throw new Error('Byte value must fit between 0 and 255')
     return Promise.resolve(Uint8Array.from([value]))
   }
 }
@@ -156,9 +143,6 @@ export class Byte extends ByteProcessor<number> {
 export class Long extends ByteProcessor<number | string | BigNumber> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: number | string | BigNumber) {
-    return null
   }
   getBytes (value: number | string | BigNumber) {
     let bytes
@@ -179,11 +163,11 @@ export class Short extends ByteProcessor<number> {
     super(required);
   }
   getValidationError(val: number) {
+    if (typeof val !== 'number') return 'You should pass a number to Short constructor'
+    if (val < -2147483648 || val > 2147483647) return 'Short value must fit between -2147483648 and 2147483647'
     return null
   }
   getBytes (value: number) {
-    if (typeof value !== 'number') throw new Error('You should pass a number to Short constructor')
-    if (value < -2147483648 || value > 2147483647) throw new Error('Short value must fit between -2147483648 and 2147483647')
     return Promise.resolve(Uint8Array.from(convert.shortToByteArray(value)))
   }
 }
@@ -192,12 +176,12 @@ export class Integer extends ByteProcessor<number> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: number) {
+  getValidationError(value: number) {
+    if (typeof value !== 'number') return 'You should pass a number to Integer constructor'
+    if (value < 0 || value > 65535) return 'Short value must fit between 0 and 65535'
     return null
   }
   getBytes (value: number) {
-    if (typeof value !== 'number') throw new Error('You should pass a number to Integer constructor')
-    if (value < 0 || value > 65535) throw new Error('Short value must fit between 0 and 65535')
     return Promise.resolve(Uint8Array.from(convert.IntToByteArray(value)))
   }
 }
@@ -205,9 +189,6 @@ export class Integer extends ByteProcessor<number> {
 export class StringWithLength extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: string) {
-    return null
   }
   getBytes (value: string, byteLength: number = 2) {
     const bytesWithLength = convert.stringToByteArrayWithSize(value, byteLength)
@@ -221,9 +202,6 @@ export class Alias extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     const aliasBytes = getAliasBytes(value)
     const aliasBytesWithLength = convert.bytesToByteArrayWithSize(aliasBytes)
@@ -234,9 +212,6 @@ export class Alias extends ByteProcessor<string> {
 export class AssetId extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: string) {
-    return null
   }
   getBytes (value: string) {
     value = blockchainifyAssetId(value)
@@ -250,17 +225,18 @@ export class Attachment extends ByteProcessor<Uint8Array | string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: Uint8Array | string) {
-    return null
-  }
-  getBytes (value: Uint8Array | string) {
-
+  getValidationError(value: Uint8Array | string) {
     if (typeof value === 'string') {
       value = Uint8Array.from(convert.stringToByteArray(value))
     }
-
     if (value.length > TRANSFER_ATTACHMENT_BYTE_LIMIT) {
-      throw new Error('Maximum attachment length is exceeded')
+      return 'Maximum attachment length is exceeded'
+    }
+    return null
+  }
+  getBytes (value: Uint8Array | string) {
+    if (typeof value === 'string') {
+      value = Uint8Array.from(convert.stringToByteArray(value))
     }
 
     const valueWithLength = convert.bytesToByteArrayWithSize(value)
@@ -273,9 +249,6 @@ export class MandatoryAssetId extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     value = blockchainifyAssetId(value)
     return Promise.resolve(base58.decode(value))
@@ -286,7 +259,10 @@ export class OrderType extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
+  getValidationError(value: string) {
+    if (value !== 'buy' && value !== 'sell') {
+      return 'There are no other order types besides "buy" and "sell"'
+    }
     return null
   }
   getBytes (value: string) {
@@ -294,8 +270,6 @@ export class OrderType extends ByteProcessor<string> {
       return Bool.prototype.getBytes.call(this, false)
     } else if (value === 'sell') {
       return Bool.prototype.getBytes.call(this, true)
-    } else {
-      throw new Error('There are no other order types besides "buy" and "sell"')
     }
   }
 }
@@ -303,9 +277,6 @@ export class OrderType extends ByteProcessor<string> {
 export class Recipient extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: string) {
-    return null
   }
   getBytes (value: string) {
     if (value.length <= 30) {
@@ -321,9 +292,6 @@ export class Recipient extends ByteProcessor<string> {
 export class Transfers extends ByteProcessor<any> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: any) {
-    return null
   }
   getBytes (values) {
     const recipientProcessor = new Recipient(true)
@@ -348,9 +316,6 @@ export class PermissionTarget extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     const addressBytes = base58.decode(value)
     return Promise.resolve(Uint8Array.from(addressBytes))
@@ -362,20 +327,20 @@ export class PermissionOpType extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
+  getValidationError(value: string) {
+    if (value === PERMISSION_TRANSACTION_OPERATION_TYPE.ADD || value === PERMISSION_TRANSACTION_OPERATION_TYPE.REMOVE) {
+      return null
+    } else {
+      return `Unknown permission operation type: ${value}`
+    }
   }
   getBytes (value: string) {
     let opByte
-
     if (value === PERMISSION_TRANSACTION_OPERATION_TYPE.ADD) {
       opByte = PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE.ADD
     } else if (value === PERMISSION_TRANSACTION_OPERATION_TYPE.REMOVE) {
       opByte = PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE.REMOVE
-    } else {
-      throw new Error(`Unknown permission operation type: ${value}`)
     }
-
     return Promise.resolve(Uint8Array.from([opByte]))
   }
 }
@@ -385,16 +350,17 @@ export class PermissionRole extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
+  getValidationError(value: string) {
+    const roleKey = Object.keys(PERMISSION_TRANSACTION_ROLE)
+      .find(k => PERMISSION_TRANSACTION_ROLE[k] === value)
+    if (!roleKey) {
+      return `Permission role ${value} not found`
+    }
     return null
   }
   getBytes (value: string) {
     const roleKey = Object.keys(PERMISSION_TRANSACTION_ROLE)
       .find(k => PERMISSION_TRANSACTION_ROLE[k] === value)
-
-    if (!roleKey) {
-      throw new Error(`Permission role ${value} not found`)
-    }
 
     const roleByte = PERMISSION_TRANSACTION_ROLE_BYTE[roleKey]
     return Promise.resolve(Uint8Array.from([roleByte]))
@@ -405,9 +371,6 @@ export class PermissionRole extends ByteProcessor<string> {
 export class PermissionDueTimestamp extends ByteProcessor<number | string | BigNumber> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: number | string | BigNumber) {
-    return null
   }
   getBytes (value: number | string | BigNumber) {
     // no due timestamp specified
@@ -442,9 +405,6 @@ export class IntegerDataEntry extends ByteProcessor<number | string | BigNumber>
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: number | string | BigNumber) {
-    return null
-  }
   getBytes (value: number | string | BigNumber) {
     return Long.prototype.getBytes.call(this, value).then((longBytes) => {
       const typeByte = Uint8Array.from([INTEGER_DATA_TYPE])
@@ -456,9 +416,6 @@ export class IntegerDataEntry extends ByteProcessor<number | string | BigNumber>
 export class BooleanDataEntry extends ByteProcessor<boolean> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: boolean) {
-    return null
   }
   getBytes (value: boolean) {
     return Bool.prototype.getBytes.call(this, value).then((boolByte) => {
@@ -472,9 +429,6 @@ export class BinaryDataEntry extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     return Base64.prototype.getBytes.call(this, value).then((binaryBytes) => {
       const typeByte = Uint8Array.from([BINARY_DATA_TYPE])
@@ -486,9 +440,6 @@ export class BinaryDataEntry extends ByteProcessor<string> {
 export class StringDataEntry extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: string) {
-    return null
   }
   getBytes (value: string) {
     return StringWithLength.prototype.getBytes.call(this, value).then((stringBytes) => {
@@ -502,9 +453,6 @@ export class BinaryDockerParamEntry extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     return Base64.prototype.getBytes.call(this, value, 4).then((binaryBytes) => {
       const typeByte = Uint8Array.from([BINARY_DATA_TYPE])
@@ -517,9 +465,6 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: string) {
-    return null
-  }
   getBytes (value: string) {
     return StringWithLength.prototype.getBytes.call(this, value, 4).then((stringBytes) => {
       const typeByte = Uint8Array.from([STRING_DATA_TYPE])
@@ -531,9 +476,6 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
 export class DataEntries extends ByteProcessor<any[]> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: any[]) {
-    return null
   }
   getBytes (entries: any[]) {
     const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length))
@@ -577,9 +519,6 @@ export class DockerCreateParamsEntries extends ByteProcessor<any[]> {
   constructor(required: boolean) {
     super(required);
   }
-  getValidationError(val: any[]) {
-    return null
-  }
   getBytes (entries: any[]) {
     const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length))
     if (entries.length) {
@@ -617,9 +556,6 @@ export class DockerCreateParamsEntries extends ByteProcessor<any[]> {
 export class ArrayOfStringsWithLength extends ByteProcessor<any> {
   constructor(required: boolean) {
     super(required);
-  }
-  getValidationError(val: any) {
-    return null
   }
   getBytes (values) {
     const recipientProcessor = new Recipient(true)
