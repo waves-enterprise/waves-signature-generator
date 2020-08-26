@@ -13,7 +13,6 @@ import {
   PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE
 } from '../constants'
 import converters from '../libs/converters'
-import { TRANSACTION_TYPES, TRANSACTION_VERSIONS } from '../transactionsFactory/constants';
 
 // NOTE : Waves asset ID in blockchain transactions equals to an empty string
 function blockchainifyAssetId (assetId: string): string {
@@ -47,20 +46,20 @@ export abstract class ByteProcessor<T> {
 
 // BASIC
 
-export class TxType<T extends TRANSACTION_TYPES> extends ByteProcessor<TRANSACTION_TYPES> {
+export class TxType<T extends number> extends ByteProcessor<number> {
   constructor(required: boolean, public type: T) {
     super(required);
   }
-  getBytes(val: TRANSACTION_TYPES) {
+  getBytes(val: number) {
     return Promise.resolve(Uint8Array.from([this.type]))
   }
 }
 
-export class TxVersion<T extends TRANSACTION_VERSIONS> extends ByteProcessor<TRANSACTION_VERSIONS> {
+export class TxVersion<T extends number> extends ByteProcessor<number> {
   constructor(required: boolean, public version: T) {
     super(required);
   }
-  getBytes(val: TRANSACTION_VERSIONS) {
+  getBytes(val: number) {
     return Promise.resolve(Uint8Array.from([this.version]))
   }
 }
