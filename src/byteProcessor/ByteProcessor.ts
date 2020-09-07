@@ -440,8 +440,8 @@ export class PermissionOptions extends ByteProcessor<PermissionOptionsType> {
     const multipleDataBytes = await Promise.all([
       (new PermissionOpType(true)).getBytes(value.opType),
       (new PermissionRole(true)).getBytes(value.role),
-      (new PermissionDueTimestamp(false)).getBytes(value.dueTimestamp),
       (new Long(true)).getBytes(value.timestamp),
+      (new PermissionDueTimestamp(false)).getBytes(value.dueTimestamp),
     ])
     return concatUint8Arrays(...multipleDataBytes)
   }
