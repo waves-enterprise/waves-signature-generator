@@ -419,6 +419,34 @@ export class PermissionDueTimestamp extends ByteProcessor<number | string | BigN
   }
 }
 
+interface PermissionOptionsType {
+  opType: PERMISSION_TRANSACTION_OPERATION_TYPE,
+  role: string,
+  dueTimestamp?: number | string // любое число
+  timestamp: number | string | BigNumber
+}
+
+export class PermissionOptions extends ByteProcessor<PermissionOptionsType> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getValidationError(value: PermissionOptionsType) {
+    return (new PermissionOpType(true)).getValidationError(value.opType)
+    || (new PermissionRole(true)).getValidationError(value.role)
+    || (new PermissionDueTimestamp(false)).getValidationError(value.dueTimestamp)
+    || (new Long(true)).getValidationError(value.timestamp)
+  }
+  async getBytes (value: PermissionOptionsType) {
+    const multipleDataBytes = await Promise.all([
+      (new PermissionOpType(true)).getBytes(value.opType),
+      (new PermissionRole(true)).getBytes(value.role),
+      (new PermissionDueTimestamp(false)).getBytes(value.dueTimestamp),
+      (new Long(true)).getBytes(value.timestamp),
+    ])
+    return concatUint8Arrays(...multipleDataBytes)
+  }
+}
+
 // DATA TRANSACTIONS ONLY
 
 const INTEGER_DATA_TYPE = 0
