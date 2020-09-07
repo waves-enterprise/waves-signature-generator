@@ -420,7 +420,7 @@ export class PermissionDueTimestamp extends ByteProcessor<number | string | BigN
 }
 
 export interface PermissionOptionsType {
-  opType: PERMISSION_TRANSACTION_OPERATION_TYPE,
+  opType: PERMISSION_TRANSACTION_OPERATION_TYPE | string,
   role: string,
   dueTimestamp?: number | string // любое число
   timestamp: number | string | BigNumber
