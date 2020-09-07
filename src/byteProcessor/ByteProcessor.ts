@@ -14,7 +14,6 @@ import {
 } from '../constants'
 import converters from '../libs/converters'
 
-// StringWithLength Attachment
 // NOTE : Waves asset ID in blockchain transactions equals to an empty string
 function blockchainifyAssetId (assetId: string): string {
   if (!assetId) throw new Error('Asset ID should not be empty')
@@ -219,6 +218,31 @@ export class StringWithLength extends ByteProcessor<string> {
     return Promise.resolve(Uint8Array.from(bytesWithLength))
   }
 }
+
+export class Attachment extends ByteProcessor<Uint8Array | string> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getValidationError(value: Uint8Array | string) {
+    if (typeof value === 'string') {
+      value = Uint8Array.from(convert.stringToByteArray(value))
+    }
+    if (value.length > TRANSFER_ATTACHMENT_BYTE_LIMIT) {
+      return 'Maximum attachment length is exceeded'
+    }
+    return null
+  }
+  getBytes (value: Uint8Array | string) {
+    if (typeof value === 'string') {
+      value = Uint8Array.from(convert.stringToByteArray(value))
+    }
+
+    const valueWithLength = convert.bytesToByteArrayWithSize(value)
+    return Promise.resolve(Uint8Array.from(valueWithLength))
+
+  }
+}
+
 
 // COMPLEX
 
