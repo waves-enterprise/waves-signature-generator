@@ -1,6 +1,6 @@
 {
   "name": "@vostokplatform/signature-generator",
-  "version": "2.0.0-RC12",
+  "version": "2.0.0-RC13",
   "main": "dist/index.js",
   "files": [
     "dist"
