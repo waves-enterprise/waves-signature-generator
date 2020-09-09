@@ -289,13 +289,7 @@ export class AssetId extends ByteProcessor<string> {
   }
   getBytes (value: string) {
     value = blockchainifyAssetId(value)
-    let bytes
-    if (this.required) {
-      bytes = base58.decode(value)
-    } else {
-      bytes = value ? concatUint8Arrays(Uint8Array.from([1]), base58.decode(value)) : Uint8Array.from([0])
-    }
-    return Promise.resolve(bytes)
+    return Promise.resolve(base58.decode(value))
   }
 }
 
