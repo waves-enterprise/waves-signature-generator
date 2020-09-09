@@ -183,10 +183,12 @@ export class Integer extends ByteProcessor<number> {
 }
 
 export class ByteArrayWithSize extends ByteProcessor<Uint8Array | string> {
-  private limit: number
-  constructor(required: boolean, limit: number) {
+  private readonly limit?: number
+  constructor(required: boolean, limit?: number) {
     super(required);
-    this.limit = limit
+    if (limit) {
+      this.limit = limit
+    }
   }
   getValidationError(value: Uint8Array | string) {
     if (typeof value === 'string') {
