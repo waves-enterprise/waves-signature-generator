@@ -144,16 +144,13 @@ export class Long extends ByteProcessor<number | string | BigNumber> {
     super(required);
   }
   getBytes (value: number | string | BigNumber) {
-    let bytes
-    if (typeof value === 'number') {
-      bytes = convert.longToByteArray(value)
-    } else {
-      if (typeof value === 'string') {
-        value = new BigNumber(value)
-      }
-      bytes = convert.bigNumberToByteArray(value)
-    }
-    return Promise.resolve(Uint8Array.from(bytes))
+    return Promise.resolve(
+      Uint8Array.from(
+        convert.bigNumberToByteArray(
+          new BigNumber(value)
+        )
+      )
+    )
   }
 }
 
