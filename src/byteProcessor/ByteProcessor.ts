@@ -263,8 +263,12 @@ export class AssetId extends ByteProcessor<string> {
   }
   getBytes (value: string) {
     value = blockchainifyAssetId(value)
-    // We must pass bytes of `[0]` for Waves asset ID and bytes of `[1] + assetId` for other asset IDs
-    const bytes = value ? concatUint8Arrays(Uint8Array.from([1]), base58.decode(value)) : Uint8Array.from([0])
+    let bytes
+    if (this.required) {
+      bytes = base58.decode(value)
+    } else {
+      bytes = value ? concatUint8Arrays(Uint8Array.from([1]), base58.decode(value)) : Uint8Array.from([0])
+    }
     return Promise.resolve(bytes)
   }
 }
