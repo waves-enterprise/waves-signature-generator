@@ -183,15 +183,17 @@ export class Integer extends ByteProcessor<number> {
 }
 
 export class ByteArrayWithSize extends ByteProcessor<Uint8Array | string> {
-  constructor(required: boolean) {
+  private limit: number
+  constructor(required: boolean, limit: number) {
     super(required);
+    this.limit = limit
   }
   getValidationError(value: Uint8Array | string) {
     if (typeof value === 'string') {
       value = Uint8Array.from(convert.stringToByteArray(value))
     }
-    if (value.length > TRANSFER_ATTACHMENT_BYTE_LIMIT) {
-      return 'Maximum length is exceeded'
+    if (this.limit && value.length > this.limit) {
+      return `Maximum length is exceeded: ${this.limit}`
     }
     return null
   }
