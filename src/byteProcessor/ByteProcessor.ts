@@ -37,6 +37,9 @@ export abstract class ByteProcessor<T> {
     if (this.required && typeof val === 'undefined') {
       return 'field is required'
     }
+    if (!this.required && !val) {
+      return
+    }
     return this.getValidationError(val)
   }
   isValid(val: T) {
@@ -67,8 +70,19 @@ export class TxVersion<T extends number> extends ByteProcessor<number> {
 // SIMPLE
 
 export class Base58 extends ByteProcessor<string> {
-  constructor(required: boolean) {
+  private readonly limit?: number
+  constructor(required: boolean, limit?: number) {
     super(required);
+    if (limit) {
+      this.limit = limit
+    }
+  }
+  getValidationError(value: string) {
+    const bytes = base58.decode(value)
+    if (this.limit && bytes.length > this.limit) {
+      return `Maximum length is exceeded: ${this.limit}`
+    }
+    return null
   }
   public getBytes (value: string) {
     const bytes = base58.decode(value)
@@ -77,8 +91,19 @@ export class Base58 extends ByteProcessor<string> {
 }
 
 export class Base58WithLength extends ByteProcessor<string> {
-  constructor(required: boolean) {
+  private readonly limit?: number
+  constructor(required: boolean, limit?: number) {
     super(required);
+    if (limit) {
+      this.limit = limit
+    }
+  }
+  getValidationError(value: string) {
+    const bytes = base58.decode(value)
+    if (this.limit && bytes.length > this.limit) {
+      return `Maximum length is exceeded: ${this.limit}`
+    }
+    return null
   }
   getBytes (value: string) {
     const bytes = Array.from(base58.decode(value))
