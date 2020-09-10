@@ -328,9 +328,8 @@ export class Recipient extends ByteProcessor<string> {
     super(required);
   }
   getBytes (value: string) {
-    if (value.length <= 30) {
-      const name = value.split(':').pop()
-      const aliasBytes = getAliasBytes(name)
+    if (/alias:.:/i.test(value)) {
+      const aliasBytes = getAliasBytes(value.split(':').pop())
       return Promise.resolve(Uint8Array.from(aliasBytes))
     } else {
       const addressBytes = base58.decode(value)
