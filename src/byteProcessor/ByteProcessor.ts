@@ -185,7 +185,7 @@ export class Short extends ByteProcessor<number> {
   }
   getValidationError(val: number) {
     if (typeof val !== 'number') return 'You should pass a number to Short constructor'
-    if (val < -2147483648 || val > 2147483647) return 'Short value must fit between -2147483648 and 2147483647'
+    if (val < 0 || val > 65535) return 'Short value must fit between 0 and 65535'
     return null
   }
   getBytes (value: number) {
@@ -199,7 +199,7 @@ export class Integer extends ByteProcessor<number> {
   }
   getValidationError(value: number) {
     if (typeof value !== 'number') return 'You should pass a number to Integer constructor'
-    if (value < 0 || value > 65535) return 'Short value must fit between 0 and 65535'
+    if (value < -2147483648 || value > 2147483647) return 'Integer value must fit between -2147483648 and 2147483647'
     return null
   }
   getBytes (value: number) {
