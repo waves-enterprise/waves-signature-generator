@@ -28,6 +28,7 @@ function getAliasBytes (alias: string): number[] {
 // ABSTRACT PARENT
 
 export abstract class ByteProcessor<T> {
+  public allowNull = false
   protected constructor(public required: boolean) {}
   public abstract getBytes(val: T) : Promise<Uint8Array>
   public getValidationError(val: T) {
@@ -420,6 +421,7 @@ export class PermissionRole extends ByteProcessor<string> {
 export class PermissionDueTimestamp extends ByteProcessor<number | string | BigNumber> {
   constructor(required: boolean) {
     super(required);
+    this.allowNull = true
   }
   getBytes (value: number | string | BigNumber) {
     // no due timestamp specified
