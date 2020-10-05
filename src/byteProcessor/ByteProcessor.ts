@@ -654,3 +654,42 @@ export class ArrayOfStringsWithLength extends ByteProcessor<any> {
     })
   }
 }
+
+export interface AtomicBadgeValue {
+  trustedSender?: string
+}
+
+export class AtomicBadge extends ByteProcessor<AtomicBadgeValue> {
+  constructor(required: boolean) {
+    super(required);
+  }
+
+  async getBytes (value: AtomicBadgeValue) {
+    const multipleDataBytes = await Promise.all([
+      (new Base58(false)).getBytes(value.trustedSender)
+    ])
+    const lengthBytes = value.trustedSender ? Uint8Array.from([1]) : Uint8Array.from([0])
+    return concatUint8Arrays(lengthBytes, ...multipleDataBytes)
+  }
+}
+
+export interface AtomicInnerTransactionsValue {
+  senderPublicKey?: string;
+  atomicBadge: AtomicBadgeValue;
+}
+
+export class AtomicInnerTransactions extends ByteProcessor<any[]> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getBytes (txs: any[]) {
+    const lengthBytes = Uint8Array.from(convert.shortToByteArray(txs.length))
+    return Promise.all(txs.map(async (tx) => {
+      const idBytes = await (new Base58(true)).getBytes(tx.id)
+      return idBytes
+    })).then((txsBytes) => {
+      const res = concatUint8Arrays(lengthBytes, ...txsBytes)
+      return res
+    })
+  }
+}
