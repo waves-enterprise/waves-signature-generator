@@ -1,6 +1,6 @@
 import converters from '../libs/converters';
 import {IKeyPairBytes} from '../interface';
-import {GostEngine as gostEngine, CryptoGost as gostCrypto} from '@vostokplatform/crypto-gost-js/dist/CryptoGost';
+import {GostEngine as gostEngine, CryptoGost as gostCrypto} from '@wavesenterprise/crypto-gost-js/dist/CryptoGost';
 
 const {coding} = gostCrypto;
 

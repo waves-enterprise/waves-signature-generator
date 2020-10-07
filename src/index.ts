@@ -3,10 +3,9 @@ export * from './interface';
 export * from './byteProcessor/ByteProcessor';
 export * from './config/Config';
 export * from './config/interface';
-export * from './signatureFactory/interface';
-export * from './signatureFactory/SignatureFactory';
 export * from './Seed';
 export * from './dictionary';
+export { BigNumber }  from '@waves/data-entities'
 
 import base58 from './libs/base58';
 import converters from './libs/converters';

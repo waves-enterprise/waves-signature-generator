@@ -89,7 +89,7 @@ export default {
     },
 
     bigNumberToByteArray(input: BigNumber): number[] {
-        if (!(input instanceof BigNumber)) {
+        if (!input.s) {
             throw new Error('BigNumber input is expected');
         }
 

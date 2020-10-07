@@ -1,5 +1,4 @@
-import {MAINNET_BYTE, TESTNET_BYTE, Seed, config} from '../src/index';
-// import {TX_NUMBER_MAP} from '../src/signatureFactory/SignatureFactory'
+import {MAINNET_BYTE, TESTNET_BYTE, Seed, config} from '../src';
 
 const MAINNET = {
     PHRASE: 'boil hip drill joke ability ghost match dizzy opera interest damage cute critic happy eye',
