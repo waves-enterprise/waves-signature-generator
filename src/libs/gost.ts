@@ -33,6 +33,7 @@ const algorithmGostSign = {
     id: 'id-tc26-gost3410-12-256'
 };
 
+const MAX_SIGN_ATTEMPTS = 20
 
 export default {
     streebog256(data: Uint8Array | string): Uint8Array {
@@ -57,9 +58,7 @@ export default {
     },
 
     sign(privateKey: Uint8Array, dataBytes: Uint8Array) {
-        const GostSign = gostEngine.getGostSign({...algorithmGostSign});
-
-        const signature = GostSign.sign(privateKey.buffer, dataBytes);
+        const signature = gostSign(privateKey, dataBytes)
 
         if (signature instanceof ArrayBuffer) {
             return new Uint8Array(signature);
@@ -180,6 +179,20 @@ function convertKey(algorithm, extractable: boolean, keyUsages: [string] | null,
         usages: keyUsages || [],
         buffer: keyData
     }
+}
+
+function gostSign(privateKey: Uint8Array, dataBytes: Uint8Array, attempts: number = 1) {
+  try{
+    const GostSign = gostEngine.getGostSign({...algorithmGostSign});
+    return GostSign.sign(privateKey.buffer, dataBytes);
+  }
+  catch(err){
+    if(attempts < MAX_SIGN_ATTEMPTS) {
+      return gostSign(privateKey, dataBytes,attempts + 1)
+    }
+    err.message = (err.message || '') + ` failed to sign transaction ${attempts} times`
+    throw err
+  }
 }
 
 function getBaseKeyForDerivation(password: string, salt: string): ArrayBuffer {
