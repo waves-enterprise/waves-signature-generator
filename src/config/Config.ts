@@ -1,5 +1,5 @@
 import { MAINNET_BYTE } from '../';
-import { IConfig, IConfigOptions, TCrypto } from './interface';
+import { IConfig, IConfigOptions } from './interface';
 
 
 const DEFAULT_CONFIG: IConfigOptions = {
@@ -21,7 +21,7 @@ class Config implements IConfig {
         return this.props.logLevel;
     }
 
-    public getCrypto(): TCrypto {
+    public getCrypto(): string {
         return this.props.crypto;
     }
 
