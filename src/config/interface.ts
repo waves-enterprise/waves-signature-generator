@@ -6,7 +6,7 @@ export interface IConfigOptions {
     networkByte: number;
     logLevel: TLogLevel;
     minimalSeedLength: number;
-    crypto: TCrypto;
+    crypto: string;
 }
 
 export interface IConfig {
@@ -21,7 +21,7 @@ export interface IConfig {
 
     clear(): void;
 
-    getCrypto(): TCrypto;
+    getCrypto(): string;
 
     isCryptoGost(): boolean;
 }

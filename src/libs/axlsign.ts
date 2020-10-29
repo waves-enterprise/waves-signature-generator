@@ -14,8 +14,6 @@
 // Implementation derived from TweetNaCl version 20140427.
 // See for details: http://tweetnacl.cr.yp.to/
 
-const axlsign = Object.create(null);
-
 const gf = function(init?: any) {
     let i, r = new Float64Array(16);
     if (init) for (i = 0; i < init.length; i++) r[i] = init[i];
@@ -1347,7 +1345,7 @@ function checkArrayTypes(...args: any[]) {
     }
 }
 
-axlsign.sharedKey = function(secretKey, publicKey) {
+const sharedKey = function(secretKey, publicKey) {
     checkArrayTypes(publicKey, secretKey);
     if (publicKey.length !== 32) throw new Error('wrong public key length');
     if (secretKey.length !== 32) throw new Error('wrong secret key length');
@@ -1356,7 +1354,7 @@ axlsign.sharedKey = function(secretKey, publicKey) {
     return sharedKey;
 };
 
-axlsign.signMessage = function(secretKey, msg, opt_random) {
+const signMessage = function(secretKey, msg, opt_random) {
     checkArrayTypes(msg, secretKey);
     if (secretKey.length !== 32) throw new Error('wrong secret key length');
     if (opt_random) {
@@ -1372,7 +1370,7 @@ axlsign.signMessage = function(secretKey, msg, opt_random) {
     }
 };
 
-axlsign.openMessage = function(publicKey, signedMsg) {
+const openMessage = function(publicKey, signedMsg) {
     checkArrayTypes(signedMsg, publicKey);
     if (publicKey.length !== 32) throw new Error('wrong public key length');
     const tmp = new Uint8Array(signedMsg.length);
@@ -1383,7 +1381,7 @@ axlsign.openMessage = function(publicKey, signedMsg) {
     return m;
 };
 
-axlsign.sign = function(secretKey, msg, opt_random) {
+const sign = function(secretKey, msg, opt_random) {
     checkArrayTypes(secretKey, msg);
     if (secretKey.length !== 32) throw new Error('wrong secret key length');
     if (opt_random) {
@@ -1397,7 +1395,7 @@ axlsign.sign = function(secretKey, msg, opt_random) {
     return signature;
 };
 
-axlsign.verify = function(publicKey, msg, signature) {
+const verify = function(publicKey, msg, signature) {
     checkArrayTypes(msg, signature, publicKey);
     if (signature.length !== 64) throw new Error('wrong signature length');
     if (publicKey.length !== 32) throw new Error('wrong public key length');
@@ -1409,7 +1407,8 @@ axlsign.verify = function(publicKey, msg, signature) {
     return (curve25519_sign_open(m, sm, sm.length, publicKey) >= 0);
 };
 
-axlsign.generateKeyPair = function(seed) {
+const generateKeyPair = function(seed: Uint8Array)
+    : {private: Uint8Array, public: Uint8Array } {
     checkArrayTypes(seed);
     if (seed.length !== 32) throw new Error('wrong seed length');
     const sk = new Uint8Array(32);
@@ -1434,4 +1433,11 @@ axlsign.generateKeyPair = function(seed) {
 };
 
 
-export default axlsign;
+export default {
+    sharedKey,
+    signMessage,
+    openMessage,
+    sign,
+    verify,
+    generateKeyPair
+};

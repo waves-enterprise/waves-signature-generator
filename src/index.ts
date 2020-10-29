@@ -13,6 +13,7 @@ import axlsign from './libs/axlsign';
 import * as blake2b from './libs/blake2b';
 import { keccak256 } from './libs/sha3';
 import secureRandom from './libs/secure-random';
+import Encryptor from './libs/encryptor';
 import * as base64 from 'base64-js';
 
 import { concatUint8Arrays } from './utils/concat';
@@ -29,7 +30,8 @@ export const libs = {
     axlsign,
     blake2b,
     secureRandom,
-    keccak256
+    keccak256,
+    Encryptor
 };
 
 export const utils = {
