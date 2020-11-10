@@ -552,6 +552,79 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
   }
 }
 
+export class DockerParamEntry extends ByteProcessor<any[]> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getBytes (entry: any) {
+    const prependKeyBytes = (valueBytes) => {
+      return StringWithLength.prototype.getBytes.call(this, entry.key).then((keyBytes) => {
+        return concatUint8Arrays(keyBytes, valueBytes)
+      })
+    }
+
+    switch (entry.type) {
+      case 'integer':
+        return IntegerDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'boolean':
+        return BooleanDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      // for docker tx data entries string and binary types have 4 byte length
+      case 'binary':
+        return BinaryDockerParamEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'string':
+        return StringDockerParamEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      default:
+        throw new Error(`There is no data type "${entry.type}"`)
+    }
+  }
+}
+
+export class List extends ByteProcessor<any[]> {
+  public entityVal: ByteProcessor<any>;
+  constructor(required: boolean, public entityClass: new (...args) => ByteProcessor<any>) {
+    super(required);
+    this.entityVal = new entityClass();
+  }
+  getBytes (entries: any[]) {
+    const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length))
+    if (entries.length) {
+      return Promise.all(entries.map(this.entityVal.getBytes)).then((entriesBytes) => {
+        const bytes = concatUint8Arrays(lengthBytes, ...entriesBytes)
+        if (bytes.length > DATA_ENTRIES_BYTE_LIMIT) throw new Error('Data transaction is too large (140KB max)')
+        return bytes
+      })
+    } else {
+      return Promise.resolve(Uint8Array.from([0, 0]))
+    }
+  }
+}
+
+export class DataEntry extends ByteProcessor<any[]> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getBytes (entry: any) {
+    const prependKeyBytes = (valueBytes) => {
+      return StringWithLength.prototype.getBytes.call(this, entry.key).then((keyBytes) => {
+        return concatUint8Arrays(keyBytes, valueBytes)
+      })
+    }
+
+    switch (entry.type) {
+      case 'integer':
+        return IntegerDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'boolean':
+        return BooleanDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'binary':
+        return BinaryDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'string':
+        return StringDataEntry.prototype.getBytes.call(this, entry.value).then(prependKeyBytes)
+      default:
+        throw new Error(`There is no data type "${entry.type}"`)
+    }
+  }
+}
+
 export class DataEntries extends ByteProcessor<any[]> {
   constructor(required: boolean) {
     super(required);
