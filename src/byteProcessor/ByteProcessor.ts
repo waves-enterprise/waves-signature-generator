@@ -581,11 +581,11 @@ export class DockerParamEntry extends ByteProcessor<any[]> {
 
 export class List extends ByteProcessor<any[]> {
   public entityVal: ByteProcessor<any>;
-  constructor(required: boolean, public entityClass: new (...args) => ByteProcessor<any>) {
-    super(required);
+  constructor(public entityClass: new (...args) => ByteProcessor<any>) {
+    super(false);
     this.entityVal = new entityClass();
   }
-  getBytes (entries: any[]) {
+  getBytes (entries: any[] = []) {
     const lengthBytes = Uint8Array.from(convert.shortToByteArray(entries.length))
     if (entries.length) {
       return Promise.all(entries.map(this.entityVal.getBytes)).then((entriesBytes) => {
@@ -764,5 +764,14 @@ export class AtomicInnerTransactions extends ByteProcessor<any[]> {
       const res = concatUint8Arrays(lengthBytes, ...txsBytes)
       return res
     })
+  }
+}
+
+export class AtomicInnerTransaction extends ByteProcessor<any[]> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getBytes (tx: any) {
+    return (new Base58(true)).getBytes(tx.id)
   }
 }
