@@ -583,6 +583,7 @@ export class List extends ByteProcessor<any[]> {
   public entityVal: ByteProcessor<any>;
   constructor(public entityClass: new (...args) => ByteProcessor<any>) {
     super(false);
+    this.allowNull = true;
     this.entityVal = new entityClass();
   }
   getBytes (entries: any[] = []) {
