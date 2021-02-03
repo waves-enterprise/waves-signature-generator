@@ -1,12 +1,11 @@
 declare let exports: any;
 declare let module: any;
-declare let require: any;
 
 declare const Buffer: any;
 
 
 function nodeRandom(count, options) {
-    const crypto = require('crypto');
+    const crypto = eval('require')('crypto');
     const buf = crypto.randomBytes(count);
 
     switch (options.type) {
