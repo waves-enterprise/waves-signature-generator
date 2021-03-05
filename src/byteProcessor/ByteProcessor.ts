@@ -34,7 +34,7 @@ export abstract class ByteProcessor<T> {
   protected constructor(public required: boolean) {}
   public abstract getSignatureBytes(val: T) : Promise<Uint8Array>
   public getGrpcBytes(val: T) : any {
-    if (val) {
+    if (val != undefined) {
       return val
     }
   }
