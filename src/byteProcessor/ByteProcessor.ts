@@ -262,6 +262,9 @@ export class ByteArrayWithSize extends ByteProcessor<Uint8Array | string> {
     return Promise.resolve(Uint8Array.from(valueWithLength))
 
   }
+  getGrpcBytes(val: Uint8Array | string): any {
+    return Uint8Array.from(Buffer.from(val))
+  }
 }
 
 export class StringWithLength extends ByteProcessor<string> {
