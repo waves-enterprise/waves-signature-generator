@@ -440,6 +440,14 @@ export class PermissionOpType extends ByteProcessor<string> {
     }
     return Promise.resolve(Uint8Array.from([opByte]))
   }
+  getGrpcBytes(val: string): any {
+    if (val === PERMISSION_TRANSACTION_OPERATION_TYPE.ADD) {
+      return 1
+    } else if (val === PERMISSION_TRANSACTION_OPERATION_TYPE.REMOVE) {
+      return 2
+    }
+    return 0
+  }
 }
 
 // role: 1-6 (byte)
@@ -461,6 +469,13 @@ export class PermissionRole extends ByteProcessor<string> {
 
     const roleByte = PERMISSION_TRANSACTION_ROLE_BYTE[roleKey]
     return Promise.resolve(Uint8Array.from([roleByte]))
+  }
+
+  getGrpcBytes(val: string): any {
+    const roleKey = Object.keys(PERMISSION_TRANSACTION_ROLE)
+      .find(k => PERMISSION_TRANSACTION_ROLE[k] === val)
+
+    return PERMISSION_TRANSACTION_ROLE_BYTE[roleKey]
   }
 }
 
