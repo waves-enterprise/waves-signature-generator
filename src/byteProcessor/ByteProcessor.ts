@@ -13,7 +13,6 @@ import {
   PERMISSION_TRANSACTION_OPERATION_TYPE_BYTE
 } from '../constants'
 import converters from '../libs/converters'
-import any = jasmine.any
 
 declare const Buffer: any;
 
