@@ -775,16 +775,10 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
 function parseDataEntry(param: any) : any {
   let value;
   let type;
-  if (param.boolValue) {
-    value = param.boolValue
-    type = 'boolean'
-  }
   if (param.intValue) {
     value = param.intValue
     type = 'integer'
-  }
-  if (param.binaryValue) {
-    // @ts-ignore
+  } else if (param.binaryValue) {
     let temp;
     if (typeof param.binaryValue === 'string') {
       temp = param.binaryValue
@@ -793,11 +787,13 @@ function parseDataEntry(param: any) : any {
     }
     type = 'binary'
     value = `base64:${temp}`
-  }
-  if (param.stringValue) {
+  } else if (param.stringValue) {
     type = 'string'
     const regOut = /\x00/g;
     value = param.stringValue.replace(regOut, '');
+  } else {
+    value = param.boolValue
+    type = 'boolean'
   }
 
   return {
@@ -894,6 +890,8 @@ export class List extends ByteProcessor<any[]> {
   parseGrpc(val: any[] = []) : any[] {
     if (val.length) {
       return val.map(this.entityVal.parseGrpc)
+    } else {
+      return []
     }
   }
 }
@@ -1077,11 +1075,6 @@ export class AtomicInnerTransaction extends ByteProcessor<any[]> {
   getGrpcBytes(tx: any) {
     if (tx) {
       return base58.decode(tx.id)
-    }
-  }
-  parseGrpc(tx: any): any {
-    if (tx) {
-      return base58.encode(tx.id)
     }
   }
 }
