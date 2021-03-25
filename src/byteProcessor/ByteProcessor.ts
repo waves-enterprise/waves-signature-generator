@@ -37,7 +37,7 @@ function parseIncomingByteType(val: any) : Uint8Array {
 function parseWrapper(val: any) {
   if (val) {
     if (typeof val === "object" && val.value) {
-      return val
+      return val.value
     }
     return val
   }
@@ -47,6 +47,13 @@ function parseBase58Value(val: any) {
   const temp = parseWrapper(val)
   if (temp) {
     return base58.encode(parseIncomingByteType(temp))
+  }
+}
+
+function parseBase64Value(val: any) {
+  const temp = parseWrapper(val)
+  if (temp) {
+    return Buffer.from(temp, 'base64').toString();
   }
 }
 
@@ -214,12 +221,7 @@ export class Base64 extends ByteProcessor<string> {
     }
   }
   parseGrpc(val: any): string {
-    if (val) {
-      if (typeof val === "object" && val.value) {
-        return val.value.toString()
-      }
-      return val.toString()
-    }
+    return parseBase64Value(val)
   }
 }
 
