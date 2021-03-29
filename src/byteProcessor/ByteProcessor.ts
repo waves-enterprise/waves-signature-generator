@@ -780,7 +780,7 @@ function parseDataEntry(param: any) : any {
   let value;
   let type;
   if (param.intValue) {
-    value = parseInt(param.intValue)
+    value = param.intValue
     type = 'integer'
   } else if (param.binaryValue) {
     let temp;

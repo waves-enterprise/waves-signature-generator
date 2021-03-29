@@ -1,6 +1,6 @@
 {
   "name": "@wavesenterprise/signature-generator",
-  "version": "2.2.9",
+  "version": "2.2.11",
   "files": [
     "dist"
   ],
