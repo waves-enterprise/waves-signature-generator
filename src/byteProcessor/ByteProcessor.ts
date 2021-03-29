@@ -52,6 +52,9 @@ function parseBase58Value(val: any) {
 
 function parseBase64Value(val: any) {
   const temp = parseWrapper(val)
+  if (typeof temp === 'string') {
+    return `base64:${temp}`
+  }
   if (temp) {
     return Buffer.from(temp, 'base64').toString();
   }
