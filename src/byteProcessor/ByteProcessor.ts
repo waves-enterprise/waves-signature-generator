@@ -50,9 +50,9 @@ function parseBase58Value(val: any) {
   }
 }
 
-function parseBase64Value(val: any) {
+function parseBase64Value(val: any, saveEncoded = false) {
   const temp = parseWrapper(val)
-  if (typeof temp === 'string') {
+  if (typeof temp === 'string' && saveEncoded) {
     return `base64:${temp}`
   }
   if (temp) {
@@ -196,8 +196,10 @@ export class Base58WithLength extends ByteProcessor<string> {
 }
 
 export class Base64 extends ByteProcessor<string> {
-  constructor(required: boolean) {
+  public saveEncoded: boolean;
+  constructor(required: boolean, saveEncoded = false) {
     super(required);
+    this.saveEncoded = saveEncoded;
   }
   getValidationError(val: string) {
     if (typeof val !== 'string') return 'You should pass a string to BinaryDataEntry constructor'
@@ -224,7 +226,7 @@ export class Base64 extends ByteProcessor<string> {
     }
   }
   parseGrpc(val: any): string {
-    return parseBase64Value(val)
+    return parseBase64Value(val, this.saveEncoded)
   }
 }
 
