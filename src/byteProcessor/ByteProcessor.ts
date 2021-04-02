@@ -781,10 +781,11 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
 function parseDataEntry(param: any) : any {
   let value;
   let type;
-  if (param.intValue) {
-    value = param.intValue
-    type = 'integer'
-  } else if (param.binaryValue) {
+  if (param.stringValue && param.stringValue !== '') {
+    type = 'string'
+    const regOut = /\x00/g;
+    value = param.stringValue.replace(regOut, '');
+  } else if (param.binaryValue && param.binaryValue !== '') {
     let temp;
     if (typeof param.binaryValue === 'string') {
       temp = param.binaryValue
@@ -793,10 +794,9 @@ function parseDataEntry(param: any) : any {
     }
     type = 'binary'
     value = `base64:${temp}`
-  } else if (param.stringValue) {
-    type = 'string'
-    const regOut = /\x00/g;
-    value = param.stringValue.replace(regOut, '');
+  } else if (param.intValue) {
+    value = param.intValue
+    type = 'integer'
   } else {
     value = param.boolValue
     type = 'boolean'
