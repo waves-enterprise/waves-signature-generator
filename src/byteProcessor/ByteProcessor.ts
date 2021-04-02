@@ -781,11 +781,20 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
 function parseDataEntry(param: any) : any {
   let value;
   let type;
-  if (param.stringValue && param.stringValue !== '') {
+  const parseString = () => {
     type = 'string'
     const regOut = /\x00/g;
     value = param.stringValue.replace(regOut, '');
-  } else if (param.binaryValue && param.binaryValue !== '') {
+  }
+  const parseInt = () => {
+    value = param.intValue
+    type = 'integer'
+  }
+  const parseBool = () => {
+    value = param.boolValue
+    type = 'boolean'
+  }
+  const parseBinary = () => {
     let temp;
     if (typeof param.binaryValue === 'string') {
       temp = param.binaryValue
@@ -794,12 +803,33 @@ function parseDataEntry(param: any) : any {
     }
     type = 'binary'
     value = `base64:${temp}`
-  } else if (param.intValue) {
-    value = param.intValue
-    type = 'integer'
+  }
+
+  if (param.valueCase) {
+    switch (param.valueCase) {
+      case 10:
+        parseInt();
+        break;
+      case 11:
+        parseBool();
+        break;
+      case 12:
+        parseBinary();
+        break;
+      case 13:
+        parseString();
+        break;
+    }
   } else {
-    value = param.boolValue
-    type = 'boolean'
+    if (param.stringValue && param.stringValue !== '') {
+      parseString()
+    } else if (param.binaryValue && param.binaryValue !== '') {
+      parseBinary()
+    } else if (param.intValue) {
+      parseInt()
+    } else {
+      parseBool()
+    }
   }
 
   return {
