@@ -27,13 +27,65 @@ function getAliasBytes (alias: string): number[] {
   return [ALIAS_VERSION, config.getNetworkByte(), ...aliasBytes]
 }
 
+function parseIncomingByteType(val: any) : Uint8Array {
+  if (typeof val === 'string') {
+    return Uint8Array.from(Buffer.from(val, 'base64'))
+  }
+  return Uint8Array.from(val)
+}
+
+function parseWrapper(val: any) {
+  if (val) {
+    if (typeof val === "object" && val.value) {
+      return val.value
+    }
+    return val
+  }
+}
+
+function parseBase58Value(val: any) {
+  const temp = parseWrapper(val)
+  if (temp) {
+    return base58.encode(parseIncomingByteType(temp))
+  }
+}
+
+function parseBase64Value(val: any, saveEncoded = false) {
+  const temp = parseWrapper(val)
+  if (typeof temp === 'string' && saveEncoded) {
+    return `base64:${temp}`
+  }
+  if (temp) {
+    return Buffer.from(temp, 'base64').toString();
+  }
+}
+
+function parseStringValue(val: any) {
+  const temp = parseWrapper(val)
+  if (temp) {
+    return temp.toString()
+  }
+}
+
+function parseNumberValue(val: any) {
+  const temp = parseWrapper(val)
+  if (temp) {
+    return temp
+  }
+}
+
 // ABSTRACT PARENT
 
 export abstract class ByteProcessor<T> {
   public allowNull = false
-  protected constructor(public required: boolean) {}
+  protected constructor(public required: boolean = true) {}
   public abstract getSignatureBytes(val: T) : Promise<Uint8Array>
   public getGrpcBytes(val: T) : any {
+    if (val != undefined) {
+      return val
+    }
+  }
+  public parseGrpc(val: any) : T | undefined {
     if (val != undefined) {
       return val
     }
@@ -101,6 +153,12 @@ export class Base58 extends ByteProcessor<string> {
       return base58.decode(val)
     }
   }
+  parseGrpc(val: any): string {
+    let temp = parseIncomingByteType(val)
+    if (val) {
+      return base58.encode(temp)
+    }
+  }
 }
 
 export class Base58WithLength extends ByteProcessor<string> {
@@ -132,11 +190,16 @@ export class Base58WithLength extends ByteProcessor<string> {
       return base58.decode(val)
     }
   }
+  parseGrpc(val: any): string {
+    return parseBase58Value(val)
+  }
 }
 
 export class Base64 extends ByteProcessor<string> {
-  constructor(required: boolean) {
+  public saveEncoded: boolean;
+  constructor(required: boolean, saveEncoded = false) {
     super(required);
+    this.saveEncoded = saveEncoded;
   }
   getValidationError(val: string) {
     if (typeof val !== 'string') return 'You should pass a string to BinaryDataEntry constructor'
@@ -161,6 +224,9 @@ export class Base64 extends ByteProcessor<string> {
       const b64 = val.slice('base64:'.length)
       return Uint8Array.from(Buffer.from(b64, 'base64'))
     }
+  }
+  parseGrpc(val: any): string {
+    return parseBase64Value(val, this.saveEncoded)
   }
 }
 
@@ -265,7 +331,28 @@ export class ByteArrayWithSize extends ByteProcessor<Uint8Array | string> {
   getGrpcBytes(val: Uint8Array | string): any {
     return Uint8Array.from(Buffer.from(val))
   }
+  parseGrpc(val: any): string {
+    return parseStringValue(val)
+  }
 }
+
+export class ValidationProofs extends ByteProcessor<any> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getSignatureBytes (value: string) {
+    return Promise.resolve(Uint8Array.from(Buffer.from(value)))
+  }
+  parseGrpc(val: any): any {
+    if (val) {
+      return {
+        validatorPublicKey:parseBase58Value(val.validatorPublicKey),
+        signature: parseBase58Value(val.signature)
+      }
+    }
+  }
+}
+
 
 export class StringWithLength extends ByteProcessor<string> {
   constructor(required: boolean) {
@@ -274,6 +361,9 @@ export class StringWithLength extends ByteProcessor<string> {
   getSignatureBytes (value: string, byteLength: number = 2) {
     const bytesWithLength = convert.stringToByteArrayWithSize(value, byteLength)
     return Promise.resolve(Uint8Array.from(bytesWithLength))
+  }
+  parseGrpc(val: any): string {
+    return parseStringValue(val)
   }
 }
 
@@ -313,6 +403,12 @@ export class Alias extends ByteProcessor<string> {
     const aliasBytesWithLength = convert.bytesToByteArrayWithSize(aliasBytes)
     return Promise.resolve(Uint8Array.from(aliasBytesWithLength))
   }
+  parseGrpc(val: any): string {
+    const temp = parseIncomingByteType(val)
+    if (val) {
+      return Buffer.from(temp.slice(4)).toString('utf-8')
+    }
+  }
 }
 
 export class AssetId extends ByteProcessor<string> {
@@ -327,6 +423,9 @@ export class AssetId extends ByteProcessor<string> {
     if (val) {
       return base58.decode(val)
     }
+  }
+  parseGrpc(val: any): string {
+    return parseBase58Value(val)
   }
 }
 
@@ -360,6 +459,22 @@ export class OrderType extends ByteProcessor<string> {
   }
 }
 
+function decodeAddressOrAlias(val: any) {
+  const temp = parseIncomingByteType(val)
+  if (val) {
+    if (temp[0] === 1) {
+      // Address
+      return base58.encode(temp);
+    } else if (temp[0] === 2) {
+      // Alias
+      return Buffer.from(temp.slice(4)).toString('utf-8')
+    } else {
+      console.trace('Unknown flag in AddressOfAlias field')
+      return base58.encode(temp);
+    }
+  }
+}
+
 export class Recipient extends ByteProcessor<string> {
   constructor(required: boolean) {
     super(required);
@@ -377,6 +492,9 @@ export class Recipient extends ByteProcessor<string> {
     if (val) {
       return base58.decode(val)
     }
+  }
+  parseGrpc(val: any): string {
+    return decodeAddressOrAlias(val)
   }
 }
 
@@ -407,6 +525,14 @@ export class Transfers extends ByteProcessor<any> {
         recipient: base58.decode(row.recipient),
         amount: row.amount
       }))
+    }
+  }
+  parseGrpc(val: any[]): any {
+    if (val && val.length) {
+      return val.map(t => ({
+        recipient: decodeAddressOrAlias(t.recipient) || '',
+        amount: +t.amount! || 0,
+      }));
     }
   }
 }
@@ -451,8 +577,28 @@ export class PermissionOpType extends ByteProcessor<string> {
     }
     return 0
   }
+  parseGrpc(val: any): string | undefined {
+    if (val) {
+      if (val === 1) {
+        return PERMISSION_TRANSACTION_OPERATION_TYPE.ADD
+      } else if (val === 2) {
+        return PERMISSION_TRANSACTION_OPERATION_TYPE.REMOVE
+      }
+    }
+  }
 }
-
+const ROLES = [
+  '',
+  'miner',
+  'issuer',
+  'dex',
+  'permissioner',
+  'blacklister',
+  'banned',
+  'contract_developer',
+  'connection_manager',
+  'sender'
+];
 // role: 1-6 (byte)
 export class PermissionRole extends ByteProcessor<string> {
   constructor(required: boolean) {
@@ -479,6 +625,17 @@ export class PermissionRole extends ByteProcessor<string> {
       .find(k => PERMISSION_TRANSACTION_ROLE[k] === val)
 
     return PERMISSION_TRANSACTION_ROLE_BYTE[roleKey]
+  }
+
+  parseGrpc(val: any): string | undefined {
+    let temp = val
+    if (val && typeof val === 'object' && val.id) {
+      temp = val.id
+    }
+    if (temp && typeof temp === 'number' && ROLES[temp]) {
+      return ROLES[temp];
+    }
+    return temp
   }
 }
 
@@ -507,6 +664,10 @@ export class PermissionDueTimestamp extends ByteProcessor<number | string | BigN
     }
 
     return Promise.resolve(Uint8Array.from([1, ...bytes]))
+  }
+
+  parseGrpc(val: any): number | string | BigNumber | undefined {
+    return parseNumberValue(val)
   }
 }
 
@@ -617,6 +778,67 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
   }
 }
 
+function parseDataEntry(param: any) : any {
+  let value;
+  let type;
+  const parseString = () => {
+    type = 'string'
+    const regOut = /\x00/g;
+    value = param.stringValue.replace(regOut, '');
+  }
+  const parseInt = () => {
+    value = param.intValue
+    type = 'integer'
+  }
+  const parseBool = () => {
+    value = param.boolValue
+    type = 'boolean'
+  }
+  const parseBinary = () => {
+    let temp;
+    if (typeof param.binaryValue === 'string') {
+      temp = param.binaryValue
+    } else {
+      temp = param.binaryValue!.toString('base64')
+    }
+    type = 'binary'
+    value = `base64:${temp}`
+  }
+
+  if (param.valueCase) {
+    switch (param.valueCase) {
+      case 10:
+        parseInt();
+        break;
+      case 11:
+        parseBool();
+        break;
+      case 12:
+        parseBinary();
+        break;
+      case 13:
+        parseString();
+        break;
+    }
+  } else {
+    if (param.stringValue && param.stringValue !== '') {
+      parseString()
+    } else if (param.binaryValue && param.binaryValue !== '') {
+      parseBinary()
+    } else if (param.intValue) {
+      parseInt()
+    } else {
+      parseBool()
+    }
+  }
+
+  return {
+    key: param.key,
+    type,
+    value,
+  };
+}
+
 export class DockerParamEntry extends ByteProcessor<any[]> {
   constructor(required: boolean) {
     super(required);
@@ -669,6 +891,10 @@ export class DockerParamEntry extends ByteProcessor<any[]> {
     }
     return result
   }
+
+  parseGrpc(param: any) : any {
+    return parseDataEntry(param)
+  }
 }
 
 export class List extends ByteProcessor<any[]> {
@@ -694,6 +920,14 @@ export class List extends ByteProcessor<any[]> {
   getGrpcBytes(val: any[] = []): any[] {
     if (val.length) {
       return val.map(this.entityVal.getGrpcBytes)
+    }
+  }
+
+  parseGrpc(val: any[] = []) : any[] {
+    if (val.length) {
+      return val.map(this.entityVal.parseGrpc)
+    } else {
+      return []
     }
   }
 }
@@ -738,6 +972,10 @@ export class DataEntries extends ByteProcessor<any[]> {
     } else {
       return Promise.resolve(Uint8Array.from([0, 0]))
     }
+  }
+
+  parseGrpc(param: any) : any {
+    return parseDataEntry(param)
   }
 }
 
@@ -810,6 +1048,11 @@ export class ArrayOfStringsWithLength extends ByteProcessor<any> {
       return val.map(base58.decode)
     }
   }
+  parseGrpc(val: any[] = []): any[] {
+    if (val.length) {
+      return val.map(parseBase58Value)
+    }
+  }
 }
 
 export interface AtomicBadgeValue {
@@ -827,6 +1070,13 @@ export class AtomicBadge extends ByteProcessor<AtomicBadgeValue> {
     ])
     const lengthBytes = value.trustedSender ? Uint8Array.from([1]) : Uint8Array.from([0])
     return concatUint8Arrays(lengthBytes, ...multipleDataBytes)
+  }
+
+  parseGrpc({...temp}: any): AtomicBadgeValue | undefined {
+    if (temp.trustedSender) {
+      temp.trustedSender = parseBase58Value(temp.trustedSender)
+    }
+    return temp
   }
 }
 
