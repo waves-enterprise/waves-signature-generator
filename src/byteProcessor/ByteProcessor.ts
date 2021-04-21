@@ -936,6 +936,27 @@ export class DataEntry extends DockerParamEntry {
   constructor(required: boolean) {
     super(required);
   }
+
+  getSignatureBytes (entry: any) {
+    const prependKeyBytes = (valueBytes) => {
+      return StringWithLength.prototype.getSignatureBytes.call(this, entry.key).then((keyBytes) => {
+        return concatUint8Arrays(keyBytes, valueBytes)
+      })
+    }
+
+    switch (entry.type) {
+      case 'integer':
+        return IntegerDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'boolean':
+        return BooleanDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'binary':
+        return BinaryDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'string':
+        return StringDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      default:
+        throw new Error(`There is no data type "${entry.type}"`)
+    }
+  }
 }
 
 export class DataEntries extends ByteProcessor<any[]> {
