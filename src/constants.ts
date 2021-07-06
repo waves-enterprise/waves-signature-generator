@@ -6,7 +6,8 @@ export const PERMISSION_TRANSACTION_ROLE = {
     BLACKLISTER: 'blacklister',
     BANNED: 'banned',
     CONTRACT_DEVELOPER: 'contract_developer',
-    CONNECTION_MANAGER: 'connection_manager'
+    CONNECTION_MANAGER: 'connection_manager',
+    CONTRACT_VALIDATOR: 'contract_validator',
 };
 
 export const PERMISSION_TRANSACTION_ROLE_BYTE = {
@@ -17,7 +18,8 @@ export const PERMISSION_TRANSACTION_ROLE_BYTE = {
     BLACKLISTER: 5,
     BANNED: 6,
     CONTRACT_DEVELOPER: 7,
-    CONNECTION_MANAGER: 8
+    CONNECTION_MANAGER: 8,
+    CONTRACT_VALIDATOR: 10,
 };
 
 export const enum PERMISSION_TRANSACTION_OPERATION_TYPE {

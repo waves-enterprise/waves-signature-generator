@@ -597,7 +597,8 @@ const ROLES = [
   'banned',
   'contract_developer',
   'connection_manager',
-  'sender'
+  'sender',
+  'contract_validator',
 ];
 // role: 1-6 (byte)
 export class PermissionRole extends ByteProcessor<string> {
