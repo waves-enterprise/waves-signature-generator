@@ -1136,3 +1136,43 @@ export class AtomicInnerTransaction extends ByteProcessor<any[]> {
     }
   }
 }
+
+export class ContractApiVersion extends ByteProcessor<any> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getSignatureBytes (apiVersion: string) {
+    const [ majorVersion, minorVersion ] = apiVersion.split('.')
+    const bytesMajor = convert.shortToByteArray(+majorVersion)
+    const bytesMinor = convert.shortToByteArray(+minorVersion)
+    return Promise.resolve(Uint8Array.from([...bytesMajor, ...bytesMinor]))
+  }
+}
+
+export enum ValidationPolicyType {
+  'any' = 0,
+  'majority' = 1,
+  'majority_with_one_of' = 2
+}
+
+export interface ValidationPolicyValue {
+  type: ValidationPolicyType;
+  addresses?: string[];
+}
+
+export class ValidationPolicy extends ByteProcessor<ValidationPolicyValue> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  async getSignatureBytes (validationPolicy: ValidationPolicyValue) {
+    const { type, addresses = [] } = validationPolicy
+    const policyTypeValue = Object.values(ValidationPolicyType).indexOf(type)
+    let res = Uint8Array.from([policyTypeValue])
+    if (Object.values(ValidationPolicyType).indexOf(type) === ValidationPolicyType['majority_with_one_of']) {
+      const lengthBytes = Uint8Array.from(convert.shortToByteArray(addresses.length))
+      const addressesBytes = await Promise.all(addresses.map(address => (new Base58(false)).getSignatureBytes(address)))
+      res = concatUint8Arrays(res, lengthBytes, ...addressesBytes)
+    }
+    return Promise.resolve(res)
+  }
+}

@@ -7,6 +7,7 @@ export const PERMISSION_TRANSACTION_ROLE = {
     BANNED: 'banned',
     CONTRACT_DEVELOPER: 'contract_developer',
     CONNECTION_MANAGER: 'connection_manager',
+    SENDER: 'sender',
     CONTRACT_VALIDATOR: 'contract_validator',
 };
 
@@ -19,6 +20,7 @@ export const PERMISSION_TRANSACTION_ROLE_BYTE = {
     BANNED: 6,
     CONTRACT_DEVELOPER: 7,
     CONNECTION_MANAGER: 8,
+    SENDER: 9,
     CONTRACT_VALIDATOR: 10,
 };
 
