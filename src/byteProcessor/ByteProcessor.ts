@@ -1175,4 +1175,18 @@ export class ValidationPolicy extends ByteProcessor<ValidationPolicyValue> {
     }
     return Promise.resolve(res)
   }
+  parseGrpc(val: any): ValidationPolicyValue {
+    if (!val) return val;
+
+    const { majority, majorityWithOneOf } = val;
+    const ret: ValidationPolicyValue = { type: ValidationPolicyType.any };
+
+    if (majority) ret.type = ValidationPolicyType.majority;
+    else if (majorityWithOneOf) {
+      ret.type = ValidationPolicyType.majority_with_one_of;
+      ret.addresses = majorityWithOneOf.addressesList;
+    }
+
+    return ret;
+  }
 }
