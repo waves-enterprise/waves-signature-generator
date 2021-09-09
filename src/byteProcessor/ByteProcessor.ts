@@ -1184,7 +1184,7 @@ export class ValidationPolicy extends ByteProcessor<ValidationPolicyValue> {
     if (majority) ret.type = ValidationPolicyType.majority;
     else if (majorityWithOneOf) {
       ret.type = ValidationPolicyType.majority_with_one_of;
-      ret.addresses = majorityWithOneOf.addressesList;
+      ret.addresses = majorityWithOneOf.addressesList.map(address => parseBase58Value(address));
     }
 
     return ret;
