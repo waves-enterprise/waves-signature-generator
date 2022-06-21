@@ -16,10 +16,10 @@ export class Seed {
             throw new Error('Your seed length is less than allowed in config');
         }
 
-        const keys = config.isCryptoGost() ? utils.cryptoGost.buildKeyPair(phrase) : utils.crypto.buildKeyPair(phrase);
+        const keys = utils.crypto.buildKeyPair(phrase);
 
         this.phrase = phrase;
-        this.address = config.isCryptoGost() ? utils.cryptoGost.buildRawAddress(keys.publicKey) : utils.crypto.buildRawAddress(keys.publicKey);
+        this.address = utils.crypto.buildRawAddress(keys.publicKey);
 
         this.keyPair = {
             privateKey: libs.base58.encode(keys.privateKey),
@@ -43,7 +43,6 @@ export class Seed {
             throw new Error('The seed phrase you are trying to encrypt is too short');
         }
 
-        // return isGost ? utils.cryptoGost.encryptSeed(seedPhrase, password, address) : utils.crypto.encryptSeed(seedPhrase, password);
         return utils.crypto.encryptSeed(seedPhrase, password);
     }
 
@@ -54,7 +53,6 @@ export class Seed {
         let phrase;
 
         try {
-            // phrase = config.isCryptoGost() ? utils.cryptoGost.decryptSeed(encryptedSeedPhrase, password, address) : utils.crypto.decryptSeed(encryptedSeedPhrase, password);
             phrase = utils.crypto.decryptSeed(encryptedSeedPhrase, password);
         } catch (e) {
             throw new Error(wrongPasswordMessage);
@@ -93,7 +91,7 @@ export class Seed {
 
     private static _generateNewSeed(length: number): string {
 
-        const random = config.isCryptoGost() ? utils.cryptoGost.generateRandomUint32Array(length) : utils.crypto.generateRandomUint32Array(length);
+        const random = utils.crypto.generateRandomUint32Array(length);
         const wordCount = dictionary.length;
         const phrase = [];
 

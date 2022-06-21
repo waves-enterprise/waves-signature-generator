@@ -22,6 +22,4 @@ export interface IConfig {
     clear(): void;
 
     getCrypto(): string;
-
-    isCryptoGost(): boolean;
 }

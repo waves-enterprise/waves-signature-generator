@@ -25,10 +25,6 @@ class Config implements IConfig {
         return this.props.crypto;
     }
 
-    public isCryptoGost(): boolean {
-        return this.props.crypto === 'gost';
-    }
-
     public set(config: Partial<IConfigOptions>) {
         Object.assign(this.props, config);
     }
