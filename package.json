@@ -1,6 +1,6 @@
 {
   "name": "@wavesenterprise/signature-generator",
-  "version": "2.2.8",
+  "version": "2.3.2",
   "files": [
     "dist"
   ],
@@ -15,8 +15,6 @@
     "crypto-js": "3.1.9-1"
   },
   "scripts": {
-    "postversion": "npm publish",
-    "postpublish": "git push",
     "prepare": "npm run build",
     "test": "npm run compile-test && jest --config jest.config.json",
     "compile": "tsc -p ./",

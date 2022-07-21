@@ -50,8 +50,11 @@ function parseBase58Value(val: any) {
   }
 }
 
-function parseBase64Value(val: any) {
+function parseBase64Value(val: any, saveEncoded = false) {
   const temp = parseWrapper(val)
+  if (typeof temp === 'string' && saveEncoded) {
+    return `base64:${temp}`
+  }
   if (temp) {
     return Buffer.from(temp, 'base64').toString();
   }
@@ -193,8 +196,10 @@ export class Base58WithLength extends ByteProcessor<string> {
 }
 
 export class Base64 extends ByteProcessor<string> {
-  constructor(required: boolean) {
+  public saveEncoded: boolean;
+  constructor(required: boolean, saveEncoded = false) {
     super(required);
+    this.saveEncoded = saveEncoded;
   }
   getValidationError(val: string) {
     if (typeof val !== 'string') return 'You should pass a string to BinaryDataEntry constructor'
@@ -221,7 +226,7 @@ export class Base64 extends ByteProcessor<string> {
     }
   }
   parseGrpc(val: any): string {
-    return parseBase64Value(val)
+    return parseBase64Value(val, this.saveEncoded)
   }
 }
 
@@ -592,7 +597,8 @@ const ROLES = [
   'banned',
   'contract_developer',
   'connection_manager',
-  'sender'
+  'sender',
+  'contract_validator',
 ];
 // role: 1-6 (byte)
 export class PermissionRole extends ByteProcessor<string> {
@@ -776,10 +782,20 @@ export class StringDockerParamEntry extends ByteProcessor<string> {
 function parseDataEntry(param: any) : any {
   let value;
   let type;
-  if (param.intValue) {
+  const parseString = () => {
+    type = 'string'
+    const regOut = /\x00/g;
+    value = param.stringValue.replace(regOut, '');
+  }
+  const parseInt = () => {
     value = param.intValue
     type = 'integer'
-  } else if (param.binaryValue) {
+  }
+  const parseBool = () => {
+    value = param.boolValue
+    type = 'boolean'
+  }
+  const parseBinary = () => {
     let temp;
     if (typeof param.binaryValue === 'string') {
       temp = param.binaryValue
@@ -788,13 +804,33 @@ function parseDataEntry(param: any) : any {
     }
     type = 'binary'
     value = `base64:${temp}`
-  } else if (param.stringValue) {
-    type = 'string'
-    const regOut = /\x00/g;
-    value = param.stringValue.replace(regOut, '');
+  }
+
+  if (param.valueCase) {
+    switch (param.valueCase) {
+      case 10:
+        parseInt();
+        break;
+      case 11:
+        parseBool();
+        break;
+      case 12:
+        parseBinary();
+        break;
+      case 13:
+        parseString();
+        break;
+    }
   } else {
-    value = param.boolValue
-    type = 'boolean'
+    if (param.stringValue && param.stringValue !== '') {
+      parseString()
+    } else if (param.binaryValue && param.binaryValue !== '') {
+      parseBinary()
+    } else if (param.intValue) {
+      parseInt()
+    } else {
+      parseBool()
+    }
   }
 
   return {
@@ -900,6 +936,27 @@ export class List extends ByteProcessor<any[]> {
 export class DataEntry extends DockerParamEntry {
   constructor(required: boolean) {
     super(required);
+  }
+
+  getSignatureBytes (entry: any) {
+    const prependKeyBytes = (valueBytes) => {
+      return StringWithLength.prototype.getSignatureBytes.call(this, entry.key).then((keyBytes) => {
+        return concatUint8Arrays(keyBytes, valueBytes)
+      })
+    }
+
+    switch (entry.type) {
+      case 'integer':
+        return IntegerDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'boolean':
+        return BooleanDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'binary':
+        return BinaryDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      case 'string':
+        return StringDataEntry.prototype.getSignatureBytes.call(this, entry.value).then(prependKeyBytes)
+      default:
+        throw new Error(`There is no data type "${entry.type}"`)
+    }
   }
 }
 
@@ -1077,5 +1134,59 @@ export class AtomicInnerTransaction extends ByteProcessor<any[]> {
     if (tx) {
       return base58.decode(tx.id)
     }
+  }
+}
+
+export class ContractApiVersion extends ByteProcessor<any> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  getSignatureBytes (apiVersion: string) {
+    const [ majorVersion, minorVersion ] = apiVersion.split('.')
+    const bytesMajor = convert.shortToByteArray(+majorVersion)
+    const bytesMinor = convert.shortToByteArray(+minorVersion)
+    return Promise.resolve(Uint8Array.from([...bytesMajor, ...bytesMinor]))
+  }
+}
+
+export enum ValidationPolicyType {
+  'any' = 0,
+  'majority' = 1,
+  'majority_with_one_of' = 2
+}
+
+export interface ValidationPolicyValue {
+  type: ValidationPolicyType;
+  addresses?: string[];
+}
+
+export class ValidationPolicy extends ByteProcessor<ValidationPolicyValue> {
+  constructor(required: boolean) {
+    super(required);
+  }
+  async getSignatureBytes (validationPolicy: ValidationPolicyValue) {
+    const { type, addresses = [] } = validationPolicy
+    const policyTypeValue = Object.values(ValidationPolicyType).indexOf(type)
+    let res = Uint8Array.from([policyTypeValue])
+    if (Object.values(ValidationPolicyType).indexOf(type) === ValidationPolicyType['majority_with_one_of']) {
+      const lengthBytes = Uint8Array.from(convert.shortToByteArray(addresses.length))
+      const addressesBytes = await Promise.all(addresses.map(address => (new Base58(false)).getSignatureBytes(address)))
+      res = concatUint8Arrays(res, lengthBytes, ...addressesBytes)
+    }
+    return Promise.resolve(res)
+  }
+  parseGrpc(val: any): ValidationPolicyValue {
+    if (!val) return val;
+
+    const { majority, majorityWithOneOf } = val;
+    const ret: ValidationPolicyValue = { type: ValidationPolicyType.any };
+
+    if (majority) ret.type = ValidationPolicyType.majority;
+    else if (majorityWithOneOf) {
+      ret.type = ValidationPolicyType.majority_with_one_of;
+      ret.addresses = majorityWithOneOf.addressesList.map(address => parseBase58Value(address));
+    }
+
+    return ret;
   }
 }
