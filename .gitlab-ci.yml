@@ -1,3 +1,4 @@
+#ci
 image: "node:16-slim"
 
 stages:
