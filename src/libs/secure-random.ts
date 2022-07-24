@@ -1,9 +1,9 @@
-import * as randomBytes from '@consento/sync-randombytes'
+import randomBytes from '@consento/sync-randombytes'
 
 declare const Buffer: any;
 
 function secureRandom(count, options) {
-    const randomUint8Array = (randomBytes as any)(new Uint8Array(count))
+    const randomUint8Array = randomBytes(new Uint8Array(count))
 
     switch (options.type) {
         case 'Buffer':

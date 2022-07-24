@@ -30,11 +30,11 @@ export class Seed {
         Object.freeze(this.keyPair);
     }
 
-    public encrypt(password: string, encryptionRounds?: number) {
-        return Seed.encryptSeedPhrase(this.phrase, password, this.address, this.isGost);
+    public encrypt(password: string, _?: number) {
+        return Seed.encryptSeedPhrase(this.phrase, password);
     }
 
-    public static encryptSeedPhrase(seedPhrase: string, password: string, address: string, isGost: boolean = false): string {
+    public static encryptSeedPhrase(seedPhrase: string, password: string): string {
         if (password && password.length < 8) {
             // logger.warn('Your password may be too weak');
         }
@@ -46,7 +46,7 @@ export class Seed {
         return utils.crypto.encryptSeed(seedPhrase, password);
     }
 
-    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string, address: string): string {
+    public static decryptSeedPhrase(encryptedSeedPhrase: string, password: string): string {
 
         const wrongPasswordMessage = 'The password is wrong';
 
