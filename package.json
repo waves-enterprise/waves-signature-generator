@@ -2,11 +2,11 @@
   "name": "@wavesenterprise/signature-generator",
   "version": "2.3.4",
   "files": [
-    "dist_prev"
+    "dist"
   ],
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "module": "dist/mylib.esm.js",
+  "module": "dist/signature-generator.esm.js",
   "dependencies": {
     "@consento/sync-randombytes": "^1.0.5",
     "@waves/data-entities": "^1.6.0",
