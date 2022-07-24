@@ -189,7 +189,7 @@ let converters = function () {
             }
 
             if (opt_startIndex && length) {
-                let index = this.checkBytesToIntInput(bytes, parseInt(length, 10), parseInt(opt_startIndex, 10));
+                let _index = this.checkBytesToIntInput(bytes, parseInt(length, 10), parseInt(opt_startIndex, 10));
 
                 bytes = bytes.slice(opt_startIndex, opt_startIndex + length);
             }

@@ -48,6 +48,8 @@ function parseBase58Value(val: any) {
   if (temp) {
     return base58.encode(parseIncomingByteType(temp))
   }
+
+  throw new Error('Wrong argument')
 }
 
 function parseBase64Value(val: any, saveEncoded = false) {
@@ -86,11 +88,13 @@ export abstract class ByteProcessor<T> {
     }
   }
   public parseGrpc(val: any) : T | undefined {
-    if (val != undefined) {
-      return val
+    if (val === undefined) {
+      return;
     }
+
+    return val;
   }
-  public getValidationError(val: T) {
+  public getValidationError(_val: T) {
     return null
   }
   public getError(val: T): string | null {
@@ -113,7 +117,7 @@ export class TxType<T extends number> extends ByteProcessor<number> {
   constructor(required: boolean, public type: T) {
     super(required);
   }
-  getSignatureBytes(val: number) {
+  getSignatureBytes(_: number) {
     return Promise.resolve(Uint8Array.from([this.type]))
   }
 }
@@ -122,7 +126,7 @@ export class TxVersion<T extends number> extends ByteProcessor<number> {
   constructor(required: boolean, public version: T) {
     super(required);
   }
-  getSignatureBytes(val: number) {
+  getSignatureBytes(_: number) {
     return Promise.resolve(Uint8Array.from([this.version]))
   }
 }

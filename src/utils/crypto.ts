@@ -5,7 +5,7 @@ import base58 from '../libs/base58';
 import * as blake from '../libs/blake2b';
 import converters from '../libs/converters';
 import secureRandom from '../libs/secure-random';
-import { keccak256 } from '../libs/sha3';
+import { keccak256 } from 'js-sha3';
 
 import { concatUint8Arrays } from './concat';
 import { config } from '../';

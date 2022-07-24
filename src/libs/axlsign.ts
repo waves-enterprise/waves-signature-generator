@@ -1337,7 +1337,7 @@ function curve25519_sign_open(m, sm, n, pk) {
 
 /* High-level API */
 
-function checkArrayTypes(...args: any[]) {
+function checkArrayTypes(..._: any[]) {
     let t, i;
     for (i = 0; i < arguments.length; i++) {
         if ((t = Object.prototype.toString.call(arguments[i])) !== '[object Uint8Array]')
