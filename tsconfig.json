@@ -4,7 +4,8 @@
     "types"
   ],
   "compilerOptions": {
-    "module": "esnext",
+    "target": "ES6",
+    "module": "es2015",
     "lib": [
       "dom",
       "esnext"
