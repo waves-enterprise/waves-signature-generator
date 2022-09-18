@@ -1,6 +1,5 @@
-import { BaseProcessor } from './BaseProcessor'
-import {hexToBytes} from "../utils/converters/hexToBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
+import { BaseProcessor } from './BaseProcessor';
+import {hexToBytes, numberToBytes} from "@wavesenterprise/crypto-utils";
 
 export class LongProcessor extends BaseProcessor<number | string> {
     getSignatureBytes(val: number | string): Promise<Uint8Array> {

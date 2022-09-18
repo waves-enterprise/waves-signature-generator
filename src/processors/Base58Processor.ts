@@ -1,7 +1,5 @@
-import {concatBytes} from "../utils/concatBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
 import {BaseProcessor} from "./BaseProcessor";
-import {fromBase58} from "../utils/base58";
+import {concatBytes, fromBase58, numberToBytes} from "@wavesenterprise/crypto-utils";
 
 export type Base58ProcessorProps = {
     appendLength?: boolean,

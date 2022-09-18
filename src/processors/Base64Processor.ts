@@ -1,6 +1,5 @@
 import {BaseProcessor} from './BaseProcessor'
-import {concatBytes} from "../utils/concatBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
+import {concatBytes, numberToBytes} from "@wavesenterprise/crypto-utils";
 
 type Base64ProcessorProps = {
     appendLength?: boolean,

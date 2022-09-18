@@ -1,5 +1,3 @@
-import {concatBytes} from "../utils/concatBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
 import {IntProcessor} from "./IntProcessor";
 import {Base58Processor} from "./Base58Processor";
 import {StringProcessor} from "./StringProcessor";
@@ -7,10 +5,10 @@ import {Base64Processor} from "./Base64Processor";
 import {BoolProcessor} from "./BoolProcessor";
 import {BaseProcessor} from "./BaseProcessor";
 import {LongProcessor} from "./LongProcessor";
-import {strToBytes} from "../utils/converters/strToBytes";
 import {ALIAS_VERSION} from "../consts";
-import {fromBase58} from "../utils/base58";
 import {ContractParamProcessor} from "./ContractParamProcessor";
+import {ContractTransferInProcessor} from "./ContractTransferInProcessor";
+import {concatBytes, fromBase58, numberToBytes, strToBytes} from "@wavesenterprise/crypto-utils";
 
 
 export class TxType<T extends number> extends IntProcessor {
@@ -33,7 +31,8 @@ export class TxVersion<T extends number> extends IntProcessor {
     }
 }
 
-export class Bool extends BoolProcessor {}
+export class Bool extends BoolProcessor {
+}
 
 export class Byte extends BaseProcessor<number> {
     constructor(required: boolean) {
@@ -51,9 +50,17 @@ export class Byte extends BaseProcessor<number> {
     }
 }
 
-export class Long extends LongProcessor {}
+export class Long extends LongProcessor {
+}
+
+
+const INTEGER_BYTES = 4;
 
 export class Integer extends IntProcessor {
+    constructor(required) {
+        super(required, INTEGER_BYTES);
+    }
+
     getValidationError(value: number) {
         if (typeof value !== 'number') return 'You should pass a number to Integer constructor'
         if (value < -2147483648 || value > 2147483647) return 'Integer value must fit between -2147483648 and 2147483647'
@@ -189,7 +196,7 @@ export class Recipient extends BaseProcessor {
 
 export class Transfers extends BaseProcessor<Array<{
     recipient: string,
-    amount: number,
+    amount: number | string,
 }>> {
     constructor(required: boolean) {
         super(required);
@@ -197,7 +204,7 @@ export class Transfers extends BaseProcessor<Array<{
 
     async getSignatureBytes(values: Array<{
         recipient: string,
-        amount: number,
+        amount: number | string,
     }>) {
         const recipientProcessor = new Base58Processor(true)
         const amountProcessor = new LongProcessor(true)
@@ -214,7 +221,8 @@ export class Transfers extends BaseProcessor<Array<{
     }
 }
 
-export class PermissionTarget extends Recipient {}
+export class PermissionTarget extends Recipient {
+}
 
 export class PermissionOpType extends BaseProcessor<'add' | 'remove'> {
     getSignatureBytes(val: 'add' | 'remove'): Promise<Uint8Array> {
@@ -249,13 +257,17 @@ export class PermissionRole extends BaseProcessor<RoleKeys> {
     }
 }
 
-export class PermissionDueTimestamp extends LongProcessor {}
+export class PermissionDueTimestamp extends LongProcessor {
+}
 
 // DATA TRANSACTIONS ONLY
 export class DockerParamEntry extends ContractParamProcessor {
     constructor(required: boolean) {
         super(required);
     }
+}
+
+export class ContractTransferIn extends ContractTransferInProcessor {
 }
 
 export class List<V = any> extends BaseProcessor<V[]> {
@@ -267,9 +279,8 @@ export class List<V = any> extends BaseProcessor<V[]> {
         }
     }
 
-
     constructor(public ListItemProcessor: new (...args) => BaseProcessor<V>) {
-        super(false);
+        super(true);
     }
 
     async getSignatureBytes(val: V[]): Promise<Uint8Array> {
@@ -283,9 +294,11 @@ export class List<V = any> extends BaseProcessor<V[]> {
     }
 }
 
-export class DataEntry extends ContractParamProcessor {}
+export class DataEntry extends ContractParamProcessor {
+}
 
-export class ArrayOfStringsWithLength extends List.of(Recipient) {}
+export class ArrayOfStringsWithLength extends List.of(Recipient) {
+}
 
 export type AtomicBadgeValue = {
     trustedSender?: string,
@@ -293,8 +306,13 @@ export type AtomicBadgeValue = {
 
 export class AtomicBadge extends BaseProcessor<AtomicBadgeValue> {
     getSignatureBytes(val: AtomicBadgeValue): Promise<Uint8Array> {
+        if (typeof val == 'string') {
+            return Promise.resolve(concatBytes(new Uint8Array([0]), fromBase58('')))
+        }
+
         const multipleDataBytes = fromBase58(val.trustedSender ?? '')
         const lengthBytes = val.trustedSender ? new Uint8Array([1]) : new Uint8Array([0])
+
         return Promise.resolve(concatBytes(lengthBytes, multipleDataBytes))
     }
 }

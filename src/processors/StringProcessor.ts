@@ -1,7 +1,5 @@
 import {BaseProcessor} from "./BaseProcessor";
-import {strToBytes} from "../utils/converters/strToBytes";
-import {concatBytes} from "../utils/concatBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
+import {concatBytes, numberToBytes, strToBytes} from "@wavesenterprise/crypto-utils";
 
 type StringProcessorProps = {
     appendLength?: boolean,

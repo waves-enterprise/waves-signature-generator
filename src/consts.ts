@@ -1,3 +1,4 @@
-export const ALIAS_VERSION = 2
+export const MAINNET_BYTE: number = 'D'.charCodeAt(0);
+export const TESTNET_BYTE: number = 'D'.charCodeAt(0);
 
-export const PUBLIC_KEY_LENGTH = 32
+export const ALIAS_VERSION = 2
