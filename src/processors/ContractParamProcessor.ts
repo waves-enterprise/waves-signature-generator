@@ -1,33 +1,16 @@
 import { BaseProcessor } from './BaseProcessor'
-import {concatBytes} from "../utils/concatBytes";
-import {numberToBytes} from "../utils/converters/numberToBytes";
-import {strToBytes} from "../utils/converters/strToBytes";
-import {boolToBytes} from "../utils/converters/boolToBytes";
-import {hexToBytes} from "../utils/converters/hexToBytes";
+import {boolToBytes, concatBytes, hexToBytes, numberToBytes, strToBytes} from "@wavesenterprise/crypto-utils";
 
-type ContractParamString = {
-    type: 'string',
+export type ContractParameter<T extends string, Val> = {
+    type: T,
     key: string,
-    value: string,
+    value: Val
 }
 
-type ContractParamInt = {
-    type: 'integer',
-    key: string,
-    value: number | string,
-}
-
-type ContractParamBool = {
-    type: 'boolean',
-    key: string,
-    value: boolean,
-}
-
-type ContractParamBinary = {
-    type: 'binary',
-    key: string,
-    value: string,
-}
+type ContractParamString = ContractParameter<'string', string>
+type ContractParamInt = ContractParameter<'integer', number>
+type ContractParamBool = ContractParameter<'boolean', boolean>
+type ContractParamBinary = ContractParameter<'binary', string>
 
 export type ContractParam = ContractParamString | ContractParamBool | ContractParamInt | ContractParamBinary
 

@@ -1,6 +1,6 @@
 {
   "name": "@wavesenterprise/signature-generator",
-  "version": "3.0.0-rc.1",
+  "version": "3.0.0-rc.2",
   "files": [
     "dist"
   ],
@@ -8,7 +8,8 @@
   "typings": "dist/index.d.ts",
   "module": "dist/signature-generator.esm.js",
   "dependencies": {
-    "@consento/sync-randombytes": "^1.0.5"
+    "@consento/sync-randombytes": "^1.0.5",
+    "@wavesenterprise/crypto-utils": "^1.0.0-rc.1"
   },
   "scripts": {
     "build": "tsdx build",

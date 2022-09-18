@@ -1,6 +1,7 @@
 export abstract class BaseProcessor<T extends unknown = unknown> {
     public networkByte?: number
 
+
     constructor(public required = true) {
     }
 
