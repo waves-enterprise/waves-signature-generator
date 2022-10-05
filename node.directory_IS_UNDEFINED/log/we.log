@@ -1,0 +1,55 @@
+2022-09-24 22:11:05,265 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:11:52,561 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:12:23,587 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:12:26,158 INFO  [main] c.w.TransactionsSigner$ - Total transactions in file: '1', failed to sign: '1', success: '0'
+2022-09-24 22:12:26,159 WARN  [main] c.w.TransactionsSigner$ - Sign errors:
+======
+InvalidAddress(Data from other network: expected: 86(V), actual: 87(W))
+======
+2022-09-24 22:13:03,228 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:13:05,859 INFO  [main] c.w.wallet.WalletImpl - Failed to find the PrivateKey in the keystore for address '3NeTLphUBaPDjKmHPhNVRdQqS46Xf6AB28o'! Reason: Failed to get key for 3NeTLphUBaPDjKmHPhNVRdQqS46Xf6AB28o: Key wasn't found
+2022-09-24 22:13:05,887 INFO  [main] c.w.TransactionsSigner$ - Total transactions in file: '1', failed to sign: '1', success: '0'
+2022-09-24 22:13:05,888 WARN  [main] c.w.TransactionsSigner$ - Sign errors:
+======
+MissingSenderPrivateKey
+======
+2022-09-24 22:13:50,187 ERROR [main] c.w.TxSignerApplication$ - Config validation error: 'output file '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt' exists'
+2022-09-24 22:14:00,779 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:14:02,770 INFO  [main] c.w.wallet.WalletImpl - Failed to find the PrivateKey in the keystore for address '3NmUkQAXCzeGD3yT27aBqSQyo423f6LB8S7'! Reason: Failed to get key for 3NmUkQAXCzeGD3yT27aBqSQyo423f6LB8S7: Expected password
+2022-09-24 22:14:02,789 INFO  [main] c.w.TransactionsSigner$ - Total transactions in file: '1', failed to sign: '1', success: '0'
+2022-09-24 22:14:02,789 WARN  [main] c.w.TransactionsSigner$ - Sign errors:
+======
+MissingSenderPrivateKey
+======
+2022-09-24 22:15:08,541 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:15:10,723 INFO  [main] c.w.TransactionsSigner$ - Total transactions in file: '1', failed to sign: '0', success: '1'
+2022-09-24 22:15:43,661 INFO  [main] c.w.TxSignerApplication$ - Start transactions signer
+	input path: '/Users/tsemenyuk/dev/waves-signature-generator/input.json'
+	output path: '/Users/tsemenyuk/dev/waves-signature-generator/results2.txt'
+	keystore path: '/Users/tsemenyuk/dev/waves-signature-generator/wallet_new.dat'
+	chain char: 'V'
+2022-09-24 22:15:45,798 INFO  [main] c.w.TransactionsSigner$ - Total transactions in file: '1', failed to sign: '0', success: '1'
