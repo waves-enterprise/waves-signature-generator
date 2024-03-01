@@ -3,6 +3,7 @@ import {concatBytes, numberToBytes} from "@wavesenterprise/crypto-utils";
 
 type Base64ProcessorProps = {
     appendLength?: boolean,
+    bitSize?: number
 }
 
 export class Base64Processor extends BaseProcessor<string> {
@@ -13,7 +14,7 @@ export class Base64Processor extends BaseProcessor<string> {
     getSignatureBytes(val: string): Promise<Uint8Array> {
         const valueBytes = Buffer.from(val, 'base64')
         if (this.props.appendLength) {
-            return Promise.resolve(concatBytes(numberToBytes(valueBytes.length, 2), valueBytes))
+            return Promise.resolve(concatBytes(numberToBytes(valueBytes.length, (this.props.bitSize || 16) / 8 ), valueBytes))
         }
         return Promise.resolve(valueBytes)
     }

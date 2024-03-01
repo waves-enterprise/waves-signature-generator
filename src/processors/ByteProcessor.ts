@@ -297,6 +297,8 @@ export class List<V = any> extends BaseProcessor<V[]> {
 export class DataEntry extends ContractParamProcessor {
 }
 
+export class DataEntryMap extends List.of(DataEntry) {}
+
 export class ArrayOfStringsWithLength extends List.of(Recipient) {
 }
 

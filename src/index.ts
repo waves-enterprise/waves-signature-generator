@@ -8,6 +8,7 @@ export * from './processors/ContractTransferInProcessor';
 export * from './processors/IntProcessor';
 export * from './processors/LongProcessor';
 export * from './processors/StringProcessor';
+export * from './processors/StoredContract';
 
 export * from './consts';
 

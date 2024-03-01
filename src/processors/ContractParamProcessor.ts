@@ -36,7 +36,7 @@ export class ContractParamProcessor extends BaseProcessor<ContractParam> {
                 return Promise.resolve(concatBytes(keyBytes, typeByte, contentBytes))
             }
             case 'integer': {
-                const contentBytes = typeof val.value === 'number' ? numberToBytes(val.value, 8) : hexToBytes(val.value, 8)
+                const contentBytes = typeof val.value === 'number' ? numberToBytes(val.value, 8) : hexToBytes((val as any).value, 8)
                 return Promise.resolve(concatBytes(keyBytes, typeByte, contentBytes))
             }
             case 'binary': {
